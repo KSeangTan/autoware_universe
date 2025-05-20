@@ -68,7 +68,7 @@ The `autoware_lidar_shortrange_centerpoint` node has `build_only` option to buil
 Although it is preferred to move all the ROS parameters in `.param.yaml` file in Autoware Universe, the `build_only` option is not moved to the `.param.yaml` file for now, because it may be used as a flag to execute the build as a pre-task. You can execute with the following command:
 
 ```bash
-ros2 launch autoware_lidar_shortrange_centerpoint lidar_shortrange_centerpoint.launch.xml model_name:=centerpoint_tiny model_path:=/home/autoware/autoware_data/lidar_shortrange_centerpoint model_param_path:=$(ros2 pkg prefix autoware_lidar_shortrange_centerpoint --share)/config/centerpoint_tiny.param.yaml build_only:=true
+ros2 launch autoware_lidar_shortrange_centerpoint lidar_centerpoint.launch.xml model_name:=centerpoint_tiny model_path:=/home/autoware/autoware_data/lidar_centerpoint model_param_path:=$(ros2 pkg prefix autoware_lidar_shortrange_centerpoint --share)/config/centerpoint_tiny.param.yaml build_only:=true
 ```
 
 ## Assumptions / Known limits
@@ -271,12 +271,12 @@ point_cloud_range, point_feature_size, voxel_size, etc. according to the trainin
     yaw_norm_thresholds: [0.3, 0.3, 0.3, 0.3, 0.0]
 ```
 
-#### Launch the lidar_shortrange_centerpoint node
+#### Launch the lidar_centerpoint node
 
 ```bash
 cd /YOUR/AUTOWARE/PATH/Autoware
 source install/setup.bash
-ros2 launch autoware_lidar_shortrange_centerpoint lidar_shortrange_centerpoint.launch.xml  model_name:=centerpoint_custom  model_path:=/PATH/TO/ONNX/FILE/
+ros2 launch autoware_lidar_shortrange_centerpoint lidar_centerpoint.launch.xml  model_name:=centerpoint_custom  model_path:=/PATH/TO/ONNX/FILE/
 ```
 
 ### Changelog

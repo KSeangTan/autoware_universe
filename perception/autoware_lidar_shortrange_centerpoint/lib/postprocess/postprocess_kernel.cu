@@ -14,10 +14,9 @@
 
 #include "autoware/lidar_shortrange_centerpoint/postprocess/circle_nms_kernel.hpp"
 #include "autoware/lidar_shortrange_centerpoint/postprocess/postprocess_kernel.hpp"
-
-#include <thrust/count.h>
-#include <thrust/device_vector.h>
-#include <thrust/sort.h>
+#include "thrust/count.h"
+#include "thrust/device_vector.h"
+#include "thrust/sort.h"
 
 namespace
 {

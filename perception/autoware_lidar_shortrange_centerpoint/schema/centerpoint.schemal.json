@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Parameters for Lidar Centerpoint Node",
+  "title": "Parameters for Lidar ShortRange Centerpoint Node",
   "type": "object",
   "definitions": {
     "centerpoint": {

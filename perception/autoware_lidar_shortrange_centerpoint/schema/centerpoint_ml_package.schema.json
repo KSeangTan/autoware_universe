@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Parameters for Centerpoint ML model",
+  "title": "Parameters for ShortRange Centerpoint ML model",
   "type": "object",
   "definitions": {
     "centerpoint_ml_package": {

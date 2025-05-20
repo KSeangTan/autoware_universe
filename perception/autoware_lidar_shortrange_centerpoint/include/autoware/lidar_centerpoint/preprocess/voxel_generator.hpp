@@ -18,7 +18,7 @@
 #include "autoware/lidar_shortrange_centerpoint/centerpoint_config.hpp"
 #include "autoware/lidar_shortrange_centerpoint/preprocess/pointcloud_densification.hpp"
 
-#include <cuda_blackboard/cuda_pointcloud2.hpp>
+#include "sensor_msgs/msg/point_cloud2.hpp"
 
 #include <memory>
 #include <vector>
@@ -35,8 +35,8 @@ public:
   virtual std::size_t generateSweepPoints(float * d_points, cudaStream_t stream) = 0;
 
   bool enqueuePointCloud(
-    const std::shared_ptr<const cuda_blackboard::CudaPointCloud2> & input_pointcloud_msg_ptr,
-    const tf2_ros::Buffer & tf_buffer);
+    const sensor_msgs::msg::PointCloud2 & input_pointcloud_msg, const tf2_ros::Buffer & tf_buffer,
+    cudaStream_t stream);
 
 protected:
   std::unique_ptr<PointCloudDensification> pd_ptr_{nullptr};

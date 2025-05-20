@@ -170,9 +170,8 @@ void CenterPointTRT::initTrt(
 }
 
 bool CenterPointTRT::detect(
-  const std::shared_ptr<const cuda_blackboard::CudaPointCloud2> & input_pointcloud_msg_ptr,
-  const tf2_ros::Buffer & tf_buffer, std::vector<Box3D> & det_boxes3d,
-  bool & is_num_pillars_within_range)
+  const sensor_msgs::msg::PointCloud2 & input_pointcloud_msg, const tf2_ros::Buffer & tf_buffer,
+  std::vector<Box3D> & det_boxes3d, bool & is_num_pillars_within_range)
 {
   is_num_pillars_within_range = true;
 
@@ -181,7 +180,7 @@ bool CenterPointTRT::detect(
   CHECK_CUDA_ERROR(
     cudaMemsetAsync(spatial_features_d_.get(), 0, spatial_features_size_ * sizeof(float), stream_));
 
-  if (!preprocess(input_pointcloud_msg_ptr, tf_buffer)) {
+  if (!preprocess(input_pointcloud_msg, tf_buffer)) {
     RCLCPP_WARN(rclcpp::get_logger("lidar_shortrange_centerpoint"), "Fail to preprocess and skip to detect.");
     return false;
   }
@@ -209,10 +208,9 @@ bool CenterPointTRT::detect(
 }
 
 bool CenterPointTRT::preprocess(
-  const std::shared_ptr<const cuda_blackboard::CudaPointCloud2> & input_pointcloud_msg_ptr,
-  const tf2_ros::Buffer & tf_buffer)
+  const sensor_msgs::msg::PointCloud2 & input_pointcloud_msg, const tf2_ros::Buffer & tf_buffer)
 {
-  bool is_success = vg_ptr_->enqueuePointCloud(input_pointcloud_msg_ptr, tf_buffer);
+  bool is_success = vg_ptr_->enqueuePointCloud(input_pointcloud_msg, tf_buffer, stream_);
   if (!is_success) {
     return false;
   }
@@ -248,7 +246,7 @@ bool CenterPointTRT::preprocess(
     voxels_d_.get(), num_points_per_voxel_d_.get(), coordinates_d_.get(), num_voxels_d_.get(),
     config_.max_voxel_size_, config_.voxel_size_x_, config_.voxel_size_y_, config_.voxel_size_z_,
     config_.range_min_x_, config_.range_min_y_, config_.range_min_z_, encoder_in_features_d_.get(),
-    config_.encoder_in_feature_size_, stream_));
+    stream_));
 
   return true;
 }
