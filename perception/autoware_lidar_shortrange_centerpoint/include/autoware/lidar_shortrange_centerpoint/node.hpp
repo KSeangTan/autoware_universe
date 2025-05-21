@@ -39,10 +39,10 @@
 namespace autoware::lidar_shortrange_centerpoint
 {
 
-class LidarCenterPointNode : public rclcpp::Node
+class LidarShortRangeCenterPointNode : public rclcpp::Node
 {
 public:
-  explicit LidarCenterPointNode(const rclcpp::NodeOptions & node_options);
+  explicit LidarShortRangeCenterPointNode(const rclcpp::NodeOptions & node_options);
 
 private:
   void pointCloudCallback(const sensor_msgs::msg::PointCloud2::ConstSharedPtr input_pointcloud_msg);

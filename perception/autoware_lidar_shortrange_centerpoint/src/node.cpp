@@ -112,7 +112,7 @@ LidarShortRangeCenterPointNode::LidarShortRangeCenterPointNode(const rclcpp::Nod
 
   pointcloud_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
     "~/input/pointcloud", rclcpp::SensorDataQoS{}.keep_last(1),
-    std::bind(&LidarCenterPointNode::pointCloudCallback, this, std::placeholders::_1));
+    std::bind(&LidarShortRangeCenterPointNode::pointCloudCallback, this, std::placeholders::_1));
   objects_pub_ = this->create_publisher<autoware_perception_msgs::msg::DetectedObjects>(
     "~/output/objects", rclcpp::QoS{1});
 
@@ -133,7 +133,7 @@ LidarShortRangeCenterPointNode::LidarShortRangeCenterPointNode(const rclcpp::Nod
   published_time_publisher_ = std::make_unique<autoware_utils::PublishedTimePublisher>(this);
 }
 
-void LidarCenterPointNode::pointCloudCallback(
+void LidarShortRangeCenterPointNode::pointCloudCallback(
   const sensor_msgs::msg::PointCloud2::ConstSharedPtr input_pointcloud_msg)
 {
   const auto objects_sub_count =
@@ -205,4 +205,4 @@ void LidarCenterPointNode::pointCloudCallback(
 }  // namespace autoware::lidar_shortrange_centerpoint
 
 #include <rclcpp_components/register_node_macro.hpp>
-RCLCPP_COMPONENTS_REGISTER_NODE(autoware::lidar_shortrange_centerpoint::LidarCenterPointNode)
+RCLCPP_COMPONENTS_REGISTER_NODE(autoware::lidar_shortrange_centerpoint::LidarShortRangeCenterPointNode)
