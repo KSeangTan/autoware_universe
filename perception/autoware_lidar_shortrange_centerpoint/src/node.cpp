@@ -36,7 +36,7 @@
 
 namespace autoware::lidar_shortrange_centerpoint
 {
-LidarCenterPointNode::LidarShortRangeCenterPointNode(const rclcpp::NodeOptions & node_options)
+LidarShortRangeCenterPointNode::LidarShortRangeCenterPointNode(const rclcpp::NodeOptions & node_options)
 : Node("lidar_shortrange_center_point", node_options), tf_buffer_(this->get_clock())
 {
   const float score_threshold =
