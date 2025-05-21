@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__VOXEL_GENERATOR_HPP_
-#define AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__VOXEL_GENERATOR_HPP_
+#ifndef AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__PREPROCESS__VOXEL_GENERATOR_HPP_
+#define AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__PREPROCESS__VOXEL_GENERATOR_HPP_
 
-#include "autoware/lidar_centerpoint/centerpoint_config.hpp"
-#include "autoware/lidar_centerpoint/preprocess/pointcloud_densification.hpp"
+#include "autoware/lidar_shortrange_centerpoint/centerpoint_config.hpp"
+#include "autoware/lidar_shortrange_centerpoint/preprocess/pointcloud_densification.hpp"
 
 #include "sensor_msgs/msg/point_cloud2.hpp"
 
 #include <memory>
 #include <vector>
 
-namespace autoware::lidar_centerpoint
+namespace autoware::lidar_shortrange_centerpoint
 {
 class VoxelGeneratorTemplate
 {
@@ -55,6 +55,6 @@ public:
   std::size_t generateSweepPoints(float * d_points, cudaStream_t stream) override;
 };
 
-}  // namespace autoware::lidar_centerpoint
+}  // namespace autoware::lidar_shortrange_centerpoint
 
-#endif  // AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__VOXEL_GENERATOR_HPP_
+#endif  // AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__PREPROCESS__VOXEL_GENERATOR_HPP_

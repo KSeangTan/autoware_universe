@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef AUTOWARE__LIDAR_CENTERPOINT__NETWORK__SCATTER_KERNEL_HPP_
-#define AUTOWARE__LIDAR_CENTERPOINT__NETWORK__SCATTER_KERNEL_HPP_
+#ifndef AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__NETWORK__SCATTER_KERNEL_HPP_
+#define AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__NETWORK__SCATTER_KERNEL_HPP_
 
 #include "cuda.h"
 #include "cuda_runtime_api.h"
 
-namespace autoware::lidar_centerpoint
+namespace autoware::lidar_shortrange_centerpoint
 {
 cudaError_t scatterFeatures_launch(
   const float * pillar_features, const int * coords, const unsigned int * num_pillars,
@@ -26,6 +26,6 @@ cudaError_t scatterFeatures_launch(
   const std::size_t grid_size_x, const std::size_t grid_size_y, float * scattered_features,
   cudaStream_t stream);
 
-}  // namespace autoware::lidar_centerpoint
+}  // namespace autoware::lidar_shortrange_centerpoint
 
-#endif  // AUTOWARE__LIDAR_CENTERPOINT__NETWORK__SCATTER_KERNEL_HPP_
+#endif  // AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__NETWORK__SCATTER_KERNEL_HPP_

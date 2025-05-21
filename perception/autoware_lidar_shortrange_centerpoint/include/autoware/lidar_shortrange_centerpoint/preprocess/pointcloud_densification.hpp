@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__POINTCLOUD_DENSIFICATION_HPP_
-#define AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__POINTCLOUD_DENSIFICATION_HPP_
+#ifndef AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__PREPROCESS__POINTCLOUD_DENSIFICATION_HPP_
+#define AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__PREPROCESS__POINTCLOUD_DENSIFICATION_HPP_
 
 #include "tf2_ros/buffer.h"
 #include "tf2_ros/transform_listener.h"
@@ -27,9 +27,9 @@
 #include "tf2_sensor_msgs/tf2_sensor_msgs.hpp"
 #endif
 
-#include "autoware/lidar_centerpoint/cuda_utils.hpp"
+#include "autoware/lidar_shortrange_centerpoint/cuda_utils.hpp"
 
-namespace autoware::lidar_centerpoint
+namespace autoware::lidar_shortrange_centerpoint
 {
 class DensificationParam
 {
@@ -89,6 +89,6 @@ private:
   std::list<PointCloudWithTransform> pointcloud_cache_;
 };
 
-}  // namespace autoware::lidar_centerpoint
+}  // namespace autoware::lidar_shortrange_centerpoint
 
-#endif  // AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__POINTCLOUD_DENSIFICATION_HPP_
+#endif  // AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__PREPROCESS__POINTCLOUD_DENSIFICATION_HPP_

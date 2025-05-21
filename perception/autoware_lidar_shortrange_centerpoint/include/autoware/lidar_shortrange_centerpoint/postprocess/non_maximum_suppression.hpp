@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef AUTOWARE__LIDAR_CENTERPOINT__POSTPROCESS__NON_MAXIMUM_SUPPRESSION_HPP_
-#define AUTOWARE__LIDAR_CENTERPOINT__POSTPROCESS__NON_MAXIMUM_SUPPRESSION_HPP_
+#ifndef AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__POSTPROCESS__NON_MAXIMUM_SUPPRESSION_HPP_
+#define AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__POSTPROCESS__NON_MAXIMUM_SUPPRESSION_HPP_
 
-#include "autoware/lidar_centerpoint/ros_utils.hpp"
+#include "autoware/lidar_shortrange_centerpoint/ros_utils.hpp"
 
 #include <Eigen/Eigen>
 
@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-namespace autoware::lidar_centerpoint
+namespace autoware::lidar_shortrange_centerpoint
 {
 using autoware_perception_msgs::msg::DetectedObject;
 
@@ -51,6 +51,6 @@ private:
   double search_distance_2d_sq_{};
 };
 
-}  // namespace autoware::lidar_centerpoint
+}  // namespace autoware::lidar_shortrange_centerpoint
 
-#endif  // AUTOWARE__LIDAR_CENTERPOINT__POSTPROCESS__NON_MAXIMUM_SUPPRESSION_HPP_
+#endif  // AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__POSTPROCESS__NON_MAXIMUM_SUPPRESSION_HPP_

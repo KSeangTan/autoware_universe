@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef AUTOWARE__LIDAR_CENTERPOINT__POSTPROCESS__POSTPROCESS_KERNEL_HPP_
-#define AUTOWARE__LIDAR_CENTERPOINT__POSTPROCESS__POSTPROCESS_KERNEL_HPP_
+#ifndef AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__POSTPROCESS__POSTPROCESS_KERNEL_HPP_
+#define AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__POSTPROCESS__POSTPROCESS_KERNEL_HPP_
 
-#include "autoware/lidar_centerpoint/centerpoint_config.hpp"
-#include "autoware/lidar_centerpoint/utils.hpp"
+#include "autoware/lidar_shortrange_centerpoint/centerpoint_config.hpp"
+#include "autoware/lidar_shortrange_centerpoint/utils.hpp"
 #include "cuda.h"
 #include "cuda_runtime_api.h"
 
 #include <vector>
 
-namespace autoware::lidar_centerpoint
+namespace autoware::lidar_shortrange_centerpoint
 {
 class PostProcessCUDA
 {
@@ -38,6 +38,6 @@ private:
   CenterPointConfig config_;
 };
 
-}  // namespace autoware::lidar_centerpoint
+}  // namespace autoware::lidar_shortrange_centerpoint
 
-#endif  // AUTOWARE__LIDAR_CENTERPOINT__POSTPROCESS__POSTPROCESS_KERNEL_HPP_
+#endif  // AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__POSTPROCESS__POSTPROCESS_KERNEL_HPP_

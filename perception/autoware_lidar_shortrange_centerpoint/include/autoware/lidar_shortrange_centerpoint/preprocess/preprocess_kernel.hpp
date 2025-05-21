@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__PREPROCESS_KERNEL_HPP_
-#define AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__PREPROCESS_KERNEL_HPP_
+#ifndef AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__PREPROCESS__PREPROCESS_KERNEL_HPP_
+#define AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__PREPROCESS__PREPROCESS_KERNEL_HPP_
 
 #include "cuda.h"
 #include "cuda_runtime_api.h"
 
-namespace autoware::lidar_centerpoint
+namespace autoware::lidar_shortrange_centerpoint
 {
 cudaError_t generateSweepPoints_launch(
   const float * input_points, std::size_t points_size, int input_point_step, float time_lag,
@@ -46,6 +46,6 @@ cudaError_t generateFeatures_launch(
   const float voxel_size_y, const float voxel_size_z, const float range_min_x,
   const float range_min_y, const float range_min_z, float * features, cudaStream_t stream);
 
-}  // namespace autoware::lidar_centerpoint
+}  // namespace autoware::lidar_shortrange_centerpoint
 
-#endif  // AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__PREPROCESS_KERNEL_HPP_
+#endif  // AUTOWARE__LIDAR_SHORTRANGE_CENTERPOINT__PREPROCESS__PREPROCESS_KERNEL_HPP_
