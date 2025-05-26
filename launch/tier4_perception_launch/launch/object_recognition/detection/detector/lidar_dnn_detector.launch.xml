@@ -5,6 +5,7 @@
   <arg name="lidar_detection_model_name" description="options: `transfusion`, `centerpoint`, `centerpoint_tiny`, `centerpoint_sigma`, `pointpainting`"/>
   
   <!-- Lidar shortrange detection model -->
+  <arg name="lidar_shortrange_detection_model_type" description="options: `shortrange_centerpoint`"/>
   <arg name="lidar_shortrange_detection_model_name" description="options: `shortrange_centerpoint`"/>
   <arg name="shortrange_centerpoint_model_path" default="$(var data_path)/lidar_shortrange_centerpoint"/>
   
@@ -16,16 +17,17 @@
   <arg name="node/pointcloud_container"/>
   <arg name="input/pointcloud"/>
   <arg name="output/objects"/>
+  <arg name="output/shortrange_objects"/>
 
   <!-- ShortRange CenterPoint -->
-  <group if="$(eval &quot;'$(var lidar_shortrange_detection_model_name)'=='shortrange_centerpoint'&quot;)">
+  <group if="$(eval &quot;'$(var lidar_shortrange_detection_model_type)'=='shortrange_centerpoint'&quot;)">
     <push-ros-namespace namespace="shortrange_centerpoint"/>
     <arg name="lidar_shortrange_model_param_path" default="$(find-pkg-share autoware_lidar_shortrange_centerpoint)/config"/>
 
     <group>
       <include file="$(find-pkg-share autoware_lidar_shortrange_centerpoint)/launch/lidar_shortrange_centerpoint.launch.xml">
         <arg name="input/pointcloud" value="$(var input/pointcloud)"/>
-        <arg name="output/objects" value="$(var output/objects)"/>
+        <arg name="output/objects" value="$(var output/shortrange_objects)"/>
         <arg name="model_name" value="$(var lidar_shortrange_detection_model_name)"/>
         <arg name="model_path" value="$(var shortrange_centerpoint_model_path)"/>
         <arg name="model_param_path" value="$(var lidar_shortrange_model_param_path)/$(var lidar_shortrange_detection_model_name).param.yaml"/>

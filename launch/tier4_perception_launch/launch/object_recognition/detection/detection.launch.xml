@@ -7,6 +7,7 @@
   <arg name="mode" description="options: `camera_lidar_radar_fusion`, `camera_lidar_fusion`, `lidar_radar_fusion`, `lidar` or `radar`"/>
   <arg name="lidar_detection_model_type" description="options: `transfusion`, `centerpoint`, `pointpainting`, `apollo`, `clustering`"/>
   <arg name="lidar_detection_model_name" description="options: `transfusion`, `centerpoint`, `centerpoint_tiny`, `centerpoint_sigma`, `pointpainting`"/>
+  <arg name="lidar_shortrange_detection_model_type" description="options: `shortrange_centerpoint`"/>
   <arg name="lidar_shortrange_detection_model_name" description="options: `shortrange_centerpoint`"/>
   <arg name="use_object_filter" description="use object filter"/>
   <arg name="objects_filter_method" description="options: `lanelet_filter` or `position_filter`"/>
@@ -57,6 +58,7 @@
   <!-- internal interfaces -->
   <let name="pointcloud_filter/output/pointcloud" value="$(var ns)/pointcloud_map_filtered/pointcloud"/>
   <let name="lidar_ml_detector/output/objects" value="$(var ns)/$(var lidar_detection_model_type)/objects"/>
+  <let name="lidar_ml_detector/output/shortrange_objects" value="$(var ns)/$(var lidar_shortrange_detection_model_type)/objects"/>
   <let name="lidar_rule_detector/output/cluster_objects" value="$(var ns)/clustering/objects_with_feature"/>
   <let name="lidar_rule_detector/output/objects" value="$(var ns)/clustering/objects"/>
   <let name="camera_lidar_rule_detector/output/objects" value="$(var ns)/clustering/camera_lidar_fusion/objects"/>
@@ -207,7 +209,9 @@
       <arg name="node/pointcloud_container" value="$(var node/pointcloud_container)"/>
       <arg name="lidar_detection_model_type" value="$(var lidar_detection_model_type)"/>
       <arg name="lidar_detection_model_name" value="$(var lidar_detection_model_name)"/>
+      <arg name="lidar_shortrange_detection_model_type" value="$(var lidar_shortrange_detection_model_type)"/>
       <arg name="lidar_shortrange_detection_model_name" value="$(var lidar_shortrange_detection_model_name)"/>
+	  <arg name="output/shortrange_objects" value="$(var lidar_ml_detector/output/shortrange_objects)"/>
     </include>
   </group>
   <group if="$(var switch/detector/lidar_rule)">
