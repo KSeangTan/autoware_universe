@@ -40,8 +40,6 @@
     </group>
   </group>
 
-  <!-- Lidar Apollo Instance Segmentation -->
-  </group>
   <!-- TransFusion -->
   <group if="$(eval &quot;'$(var lidar_detection_model_type)'=='transfusion'&quot;)">
     <let name="lidar_detection_model_name" value="$(eval &quot;'transfusion' if ''=='$(var lidar_detection_model_name)' else '$(var lidar_detection_model_name)'&quot;)"/>
