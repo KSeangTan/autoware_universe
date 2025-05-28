@@ -92,7 +92,7 @@ LidarCenterPointNode::LidarCenterPointNode(const rclcpp::NodeOptions & node_opti
   TrtCommonConfig encoder_param(encoder_onnx_path, trt_precision, encoder_engine_path);
   TrtCommonConfig head_param(head_onnx_path, trt_precision, head_engine_path);
   DensificationParam densification_param(
-    densification_world_frame_id, densification_num_past_frames);
+    densification_world_frame_id, densification_num_past_frames, logger_name_);
 
   CenterPointConfig config(
     class_names_.size(), point_feature_size, cloud_capacity, max_voxel_size, point_cloud_range,
