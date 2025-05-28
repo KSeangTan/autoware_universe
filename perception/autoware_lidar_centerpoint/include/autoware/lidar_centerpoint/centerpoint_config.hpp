@@ -30,7 +30,7 @@ public:
     const std::vector<double> & voxel_size, const std::size_t downsample_factor,
     const std::size_t encoder_in_feature_size, const float score_threshold,
     const float circle_nms_dist_threshold, const std::vector<double> yaw_norm_thresholds,
-    const bool has_variance, const std::string logger_name)
+    const bool has_variance, const std::string logger_name = "lidar_centerpoint")
   {
     class_size_ = class_size;
     point_feature_size_ = point_feature_size;
