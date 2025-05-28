@@ -37,7 +37,7 @@
 namespace autoware::lidar_centerpoint
 {
 LidarCenterPointNode::LidarCenterPointNode(const rclcpp::NodeOptions & node_options)
-: Node("lidar_center_point", node_options), tf_buffer_(this->get_clock())
+: Node(node_options), tf_buffer_(this->get_clock())
 {
   const float score_threshold =
     static_cast<float>(this->declare_parameter<double>("post_process_params.score_threshold"));
@@ -76,8 +76,7 @@ LidarCenterPointNode::LidarCenterPointNode(const rclcpp::NodeOptions & node_opti
   const auto max_area_matrix = this->declare_parameter<std::vector<double>>("max_area_matrix");
   
   // Set up logger name 
-  const auto logger_name_ = this->declare_parameter<std::string>("logger_name", "lidar_centerpoint");
-  this->logger_name_ = logger_name_;
+  this->logger_name_ = this->declare_parameter<std::string>("logger_name", "lidar_centerpoint");
   
   detection_class_remapper_.setParameters(
     allow_remapping_by_area_matrix, min_area_matrix, max_area_matrix);
@@ -93,7 +92,7 @@ LidarCenterPointNode::LidarCenterPointNode(const rclcpp::NodeOptions & node_opti
   TrtCommonConfig encoder_param(encoder_onnx_path, trt_precision, encoder_engine_path);
   TrtCommonConfig head_param(head_onnx_path, trt_precision, head_engine_path);
   DensificationParam densification_param(
-    densification_world_frame_id, densification_num_past_frames, logger_name_);
+    densification_world_frame_id, densification_num_past_frames, this->logger_name_);
 
   if (point_cloud_range.size() != 6) {
     RCLCPP_WARN_STREAM(
