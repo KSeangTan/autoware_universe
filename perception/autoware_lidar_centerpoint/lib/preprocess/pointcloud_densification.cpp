@@ -39,7 +39,7 @@ boost::optional<geometry_msgs::msg::Transform> getTransform(
       target_frame_id, source_frame_id, time, rclcpp::Duration::from_seconds(0.5));
     return transform_stamped.transform;
   } catch (tf2::TransformException & ex) {
-    RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name_.c_str()), ex.what());
+    RCLCPP_WARN_STREAM(rclcpp::get_logger(logger_name.c_str()), ex.what());
     return boost::none;
   }
 }

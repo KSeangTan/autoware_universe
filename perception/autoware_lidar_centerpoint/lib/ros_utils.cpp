@@ -41,7 +41,7 @@ void box3DToDetectedObject(
   } else {
     classification.label = Label::UNKNOWN;
     RCLCPP_WARN_STREAM(
-      rclcpp::get_logger(logger_name_.c_str()), "Unexpected label: UNKNOWN is set.");
+      rclcpp::get_logger(logger_name.c_str()), "Unexpected label: UNKNOWN is set.");
   }
 
   if (autoware::object_recognition_utils::isCarLikeVehicle(classification.label)) {
