@@ -21,6 +21,7 @@
         <param from="$(var model_param_path)" allow_substs="true"/>
         <param from="$(var ml_package_param_path)" allow_substs="true"/>
         <param from="$(var class_remapper_param_path)"/>
+ 	  	<param name="logger_name" default="lidar_centerpoint" description="logger name"/>
 
         <!-- This parameter shall NOT be included in param file. See also: https://github.com/autowarefoundation/autoware.universe/pull/6167 -->
         <param name="build_only" value="$(var build_only)"/>
@@ -34,6 +35,7 @@
       <param from="$(var model_param_path)" allow_substs="true"/>
       <param from="$(var ml_package_param_path)" allow_substs="true"/>
       <param from="$(var class_remapper_param_path)"/>
+ 	  <param name="logger_name" default="lidar_centerpoint" description="logger name"/>
 
       <!-- This parameter shall NOT be included in param file. See also: https://github.com/autowarefoundation/autoware.universe/pull/6167 -->
       <param name="build_only" value="$(var build_only)"/>

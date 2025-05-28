@@ -28,7 +28,7 @@ using Label = autoware_perception_msgs::msg::ObjectClassification;
 
 void box3DToDetectedObject(
   const Box3D & box3d, const std::vector<std::string> & class_names, const bool has_twist,
-  const bool has_variance, autoware_perception_msgs::msg::DetectedObject & obj)
+  const bool has_variance, autoware_perception_msgs::msg::DetectedObject & obj, const std::string & logger_name)
 {
   // TODO(yukke42): the value of classification confidence of DNN, not probability.
   obj.existence_probability = box3d.score;
@@ -41,7 +41,7 @@ void box3DToDetectedObject(
   } else {
     classification.label = Label::UNKNOWN;
     RCLCPP_WARN_STREAM(
-      rclcpp::get_logger("lidar_centerpoint"), "Unexpected label: UNKNOWN is set.");
+      rclcpp::get_logger(logger_name_.c_str()), "Unexpected label: UNKNOWN is set.");
   }
 
   if (autoware::object_recognition_utils::isCarLikeVehicle(classification.label)) {

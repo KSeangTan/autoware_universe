@@ -46,7 +46,7 @@ TEST(TestSuite, box3DToDetectedObject)
     box3d.vel_y_variance = 0.6;
 
     autoware_perception_msgs::msg::DetectedObject obj;
-    autoware::lidar_centerpoint::box3DToDetectedObject(box3d, class_names, true, true, obj);
+    autoware::lidar_centerpoint::box3DToDetectedObject(box3d, class_names, true, true, obj, "lidar_centerpoint");
 
     EXPECT_FLOAT_EQ(obj.existence_probability, 0.8f);
     EXPECT_EQ(
@@ -69,7 +69,7 @@ TEST(TestSuite, box3DToDetectedObject)
     box3d.label = 10;  // Invalid
 
     autoware_perception_msgs::msg::DetectedObject obj;
-    autoware::lidar_centerpoint::box3DToDetectedObject(box3d, class_names, false, false, obj);
+    autoware::lidar_centerpoint::box3DToDetectedObject(box3d, class_names, false, false, obj, "lidar_centerpoint");
 
     EXPECT_FLOAT_EQ(obj.existence_probability, 0.5f);
     EXPECT_EQ(
