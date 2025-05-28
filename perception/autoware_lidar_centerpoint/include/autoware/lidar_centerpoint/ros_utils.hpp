@@ -29,7 +29,7 @@ namespace autoware::lidar_centerpoint
 
 void box3DToDetectedObject(
   const Box3D & box3d, const std::vector<std::string> & class_names, const bool has_twist,
-  const bool has_variance, autoware_perception_msgs::msg::DetectedObject & obj, const std::string & logger_name);
+  const bool has_variance, autoware_perception_msgs::msg::DetectedObject & obj);
 
 uint8_t getSemanticType(const std::string & class_name);
 

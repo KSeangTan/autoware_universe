@@ -172,7 +172,7 @@ void LidarCenterPointNode::pointCloudCallback(
   raw_objects.reserve(det_boxes3d.size());
   for (const auto & box3d : det_boxes3d) {
     autoware_perception_msgs::msg::DetectedObject obj;
-    box3DToDetectedObject(box3d, class_names_, has_twist_, has_variance_, obj, config_.logger_name_);
+    box3DToDetectedObject(box3d, class_names_, has_twist_, has_variance_, obj);
     raw_objects.emplace_back(obj);
   }
 
