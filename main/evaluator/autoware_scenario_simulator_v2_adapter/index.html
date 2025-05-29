@@ -77,7 +77,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#macro-rendering-error" class="md-skip">
+        <a href="#scenario_simulator_v2-adapter" class="md-skip">
           Skip to content
         </a>
       
@@ -13763,6 +13763,76 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    Purpose
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inner-workings-algorithms" class="md-nav__link">
+    Inner-workings / Algorithms
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inputs-outputs" class="md-nav__link">
+    Inputs / Outputs
+  </a>
+  
+    <nav class="md-nav" aria-label="Inputs / Outputs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inputs" class="md-nav__link">
+    Inputs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outputs" class="md-nav__link">
+    Outputs
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#assumptions-known-limits" class="md-nav__link">
+    Assumptions / Known limits
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-extensions-unimplemented-parts" class="md-nav__link">
+    Future extensions / Unimplemented parts
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -13779,21 +13849,72 @@
   
 
 
-<div><h1 id="macro-rendering-error"><em>Macro Rendering Error</em><a class="headerlink" href="#macro-rendering-error" title="Permanent link">#</a></h1>
-<p><em>File</em>: <code>evaluator/autoware_scenario_simulator_v2_adapter/README.md</code></p>
-<p><em>FileNotFoundError</em>: [Errno 2] No such file or directory: 'src/autoware/universe/evaluator/scenario_simulator_v2_adapter/schema/scenario_simulator_v2_adapter.schema.json'</p>
-<div class="highlight"><pre><span></span><code>Traceback (most recent call last):
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/mkdocs_macros/plugin.py", line 688, in render
-    return md_template.render(**page_variables)
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/jinja2/environment.py", line 1295, in render
-    self.environment.handle_exception()
-  File "/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/jinja2/environment.py", line 942, in handle_exception
-    raise rewrite_traceback_stack(source=source)
-  File "&lt;template&gt;", line 38, in top-level template code
-  File "/home/runner/work/autoware_universe/autoware_universe/mkdocs_macros.py", line 71, in json_to_markdown
-    with open(json_schema_file_path) as f:
-FileNotFoundError: [Errno 2] No such file or directory: 'src/autoware/universe/evaluator/scenario_simulator_v2_adapter/schema/scenario_simulator_v2_adapter.schema.json'
-</code></pre></div></div>
+<div><h1 id="scenario_simulator_v2-adapter">scenario_simulator_v2 Adapter<a class="headerlink" href="#scenario_simulator_v2-adapter" title="Permanent link">#</a></h1>
+<h2 id="purpose">Purpose<a class="headerlink" href="#purpose" title="Permanent link">#</a></h2>
+<p>This package provides a node to convert various messages from the Autoware into <code>tier4_simulation_msgs::msg::UserDefinedValue</code> messages for the scenario_simulator_v2.
+Currently, this node supports conversion of:</p>
+<ul>
+<li><code>tier4_metric_msgs::msg::MetricArray</code> for metric topics</li>
+</ul>
+<h2 id="inner-workings-algorithms">Inner-workings / Algorithms<a class="headerlink" href="#inner-workings-algorithms" title="Permanent link">#</a></h2>
+<ul>
+<li>For <code>tier4_metric_msgs::msg::MetricArray</code>,
+  The node subscribes to all topics listed in the parameter <code>metric_topic_list</code>.
+  Each time such message is received, it is converted into as many <code>UserDefinedValue</code> messages as the number of <code>Metric</code> objects.
+  The format of the output topic is detailed in the <em>output</em> section.</li>
+</ul>
+<h2 id="inputs-outputs">Inputs / Outputs<a class="headerlink" href="#inputs-outputs" title="Permanent link">#</a></h2>
+<h3 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">#</a></h3>
+<p>The node listens to <code>MetricArray</code> messages on the topics specified in <code>metric_topic_list</code>.</p>
+<h3 id="outputs">Outputs<a class="headerlink" href="#outputs" title="Permanent link">#</a></h3>
+<p>The node outputs <code>UserDefinedValue</code> messages that are converted from the received messages.</p>
+<ul>
+<li>For <code>MetricArray</code> messages,
+  The name of the output topics are generated from the corresponding input topic, the name of the metric.<ul>
+<li>For example, we might listen to topic <code>/planning/planning_evaluator/metrics</code> and receive a <code>MetricArray</code> with 2 metrics:<ul>
+<li>metric with <code>name: "metricA/x"</code></li>
+<li>metric with <code>name: "metricA/y"</code></li>
+</ul>
+</li>
+<li>The resulting topics to publish the <code>UserDefinedValue</code> are as follows:<ul>
+<li><code>/planning/planning_evaluator/metrics/metricA/x</code></li>
+<li><code>/planning/planning_evaluator/metrics/metricA/y</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>update_rate</td>
+<td>float</td>
+<td>The scanning and update frequency of the checker.</td>
+<td>10</td>
+<td>&gt;2</td>
+</tr>
+<tr>
+<td>metric_topic_list</td>
+<td>array</td>
+<td>The topic name list of the processing time.</td>
+<td>[]</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<h2 id="assumptions-known-limits">Assumptions / Known limits<a class="headerlink" href="#assumptions-known-limits" title="Permanent link">#</a></h2>
+<p>Values in the <code>Metric</code> objects of a <code>MetricArray</code> are assumed to be of type <code>double</code>.</p>
+<h2 id="future-extensions-unimplemented-parts">Future extensions / Unimplemented parts<a class="headerlink" href="#future-extensions-unimplemented-parts" title="Permanent link">#</a></h2></div>
 
 
 
