@@ -8,11 +8,11 @@
   <arg name="lidar_detection_model_type" description="options: `transfusion`, `centerpoint`, `pointpainting`, `apollo`, `clustering`"/>
   <arg name="lidar_detection_model_name" description="options: `transfusion`, `centerpoint`, `centerpoint_tiny`, `centerpoint_sigma`, `pointpainting`"/>
   <arg name="use_short_range_detection" description="use short range detection for redundant VRU detection"/>
-  <arg name="lidar_short_range_detection_model_type" description="options: `short_range_centerpoint`">
-    <choice value="short_range_centerpoint"/>
+  <arg name="lidar_short_range_detection_model_type" description="options: `centerpoint_short_range`">
+    <choice value="centerpoint_short_range"/>
   </arg>
-  <arg name="lidar_short_range_detection_model_name" description="options: `short_range_centerpoint`">
-    <choice value="short_range_centerpoint"/>
+  <arg name="lidar_short_range_detection_model_name" description="options: `centerpoint_short_range`">
+    <choice value="centerpoint_short_range"/>
     <choice value=""/>
   </arg>
   <arg name="use_object_filter" description="use object filter"/>
