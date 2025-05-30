@@ -11,10 +11,7 @@
   <arg name="lidar_short_range_detection_model_type" description="options: `centerpoint_short_range`">
     <choice value="centerpoint_short_range"/>
   </arg>
-  <arg name="lidar_short_range_detection_model_name" description="options: `centerpoint_short_range`">
-    <choice value="centerpoint_short_range"/>
-    <choice value=""/>
-  </arg>
+  <arg name="lidar_short_range_detection_model_name" description="options: `centerpoint_short_range`"/> 
   <arg name="use_object_filter" description="use object filter"/>
   <arg name="objects_filter_method" description="options: `lanelet_filter` or `position_filter`"/>
   <arg name="use_pointcloud_map" description="use pointcloud map filter"/>
