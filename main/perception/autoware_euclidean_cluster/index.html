@@ -14008,12 +14008,12 @@
 <tr>
 <td><code>min_cluster_size</code></td>
 <td>int</td>
-<td>the minimum number of points that a cluster needs to contain in order to be considered valid</td>
+<td>the minimum number of voxels that a cluster needs to contain in order to be considered valid</td>
 </tr>
 <tr>
 <td><code>max_cluster_size</code></td>
 <td>int</td>
-<td>the maximum number of points that a cluster needs to contain in order to be considered valid</td>
+<td>the maximum number of voxels that a cluster needs to contain in order to be considered valid</td>
 </tr>
 <tr>
 <td><code>tolerance</code></td>
@@ -14029,6 +14029,21 @@
 <td><code>min_points_number_per_voxel</code></td>
 <td>int</td>
 <td>the minimum number of points for a voxel</td>
+</tr>
+<tr>
+<td><code>min_voxel_cluster_size_for_filtering</code></td>
+<td>int</td>
+<td>The minimum voxel cluster size for a cluster to be checked for being a large cluster.</td>
+</tr>
+<tr>
+<td><code>max_points_per_voxel_in_large_cluster</code></td>
+<td>int</td>
+<td>The maximum points per voxel allowed in large clusters (used for filtering dense clusters).</td>
+</tr>
+<tr>
+<td><code>max_voxel_cluster_for_output</code></td>
+<td>int</td>
+<td>The maximum number of voxel clusters to output. If the voxels exceeds this value, the cluster will be skipped.</td>
 </tr>
 </tbody>
 </table>
