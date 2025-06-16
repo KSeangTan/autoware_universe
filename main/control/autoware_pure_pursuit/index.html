@@ -13411,6 +13411,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -13446,7 +13453,119 @@
 </ul>
 </li>
 <li><code>autoware_planning_msgs/Trajectory</code>: predicted path for ego vehicle</li>
-</ul></div>
+</ul>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ld_velocity_ratio</td>
+<td>float</td>
+<td>Velocity ratio for lookahead distance.</td>
+<td>2.4</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>ld_lateral_error_ratio</td>
+<td>float</td>
+<td>Lateral error ratio for lookahead distance.</td>
+<td>3.6</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>ld_curvature_ratio</td>
+<td>float</td>
+<td>Curvature ratio for lookahead distance.</td>
+<td>120</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>long_ld_lateral_error_threshold</td>
+<td>float</td>
+<td>Threshold for lateral error in long lookahead distance.</td>
+<td>0.5</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>min_lookahead_distance</td>
+<td>float</td>
+<td>Minimum lookahead distance.</td>
+<td>4.35</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>max_lookahead_distance</td>
+<td>float</td>
+<td>Maximum lookahead distance.</td>
+<td>15</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>converged_steer_rad</td>
+<td>float</td>
+<td>Steering angle considered as converged.</td>
+<td>0.1</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>reverse_min_lookahead_distance</td>
+<td>float</td>
+<td>Minimum lookahead distance for reversing.</td>
+<td>7</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>prediction_ds</td>
+<td>float</td>
+<td>Prediction step size.</td>
+<td>0.3</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>prediction_distance_length</td>
+<td>float</td>
+<td>Prediction distance length.</td>
+<td>21</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>resampling_ds</td>
+<td>float</td>
+<td>Resampling step size.</td>
+<td>0.1</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>curvature_calculation_distance</td>
+<td>float</td>
+<td>Distance for curvature calculation.</td>
+<td>4</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>enable_path_smoothing</td>
+<td>boolean</td>
+<td>Enable or disable path smoothing.</td>
+<td>0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>path_filter_moving_ave_num</td>
+<td>float</td>
+<td>Number of points for moving average path filter.</td>
+<td>25</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table></div>
 
 
 
