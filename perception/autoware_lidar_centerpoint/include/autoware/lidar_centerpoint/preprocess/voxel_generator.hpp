@@ -18,7 +18,7 @@
 #include "autoware/lidar_centerpoint/cuda_utils.hpp"
 #include "autoware/lidar_centerpoint/centerpoint_config.hpp"
 #include "autoware/lidar_centerpoint/preprocess/pointcloud_densification.hpp"
-#include "autoware/lidar_transfusion/preprocess/preprocess_kernel.hpp"
+#include "autoware/lidar_centerpoint/preprocess/preprocess_kernel.hpp"
 
 #include <cuda_blackboard/cuda_pointcloud2.hpp>
 
