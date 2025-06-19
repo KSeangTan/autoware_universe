@@ -301,7 +301,7 @@ namespace autoware::lidar_centerpoint
 		assert(num_features == 4);
 
 		generateSweepPoints_kernel<<<blocks, threads, 0, stream_>>>(
-			input_points, points_size, time_lag, transform_array, config.point_feature_size,
+			input_points, points_size, time_lag, transform_array, config_.point_feature_size,
 			output_points);
 
 		cudaError_t err = cudaGetLastError();
@@ -352,7 +352,7 @@ namespace autoware::lidar_centerpoint
 		// exchange x and y to process in a row-major order
 		dim3 threads = {32, 32};
 		dim3 blocks = {
-			(config_.grid_size_y_ + threads.x - 1) / threads.x, (config_.grid_size_x_ + threads.y - 1) / threads.y};
+			(static_cast<unsigned int>(config_.grid_size_y_) + threads.x - 1) / threads.x, (static_cast<unsigned int>(config_.grid_size_x_) + threads.y - 1) / threads.y};
 
 		generateBaseFeatures_kernel<<<blocks, threads, 0, stream>>>(
 			mask, voxels, config_.grid_size_y_, config_.grid_size_x_, config_.max_voxel_size_, pillar_num, voxel_features, voxel_num,

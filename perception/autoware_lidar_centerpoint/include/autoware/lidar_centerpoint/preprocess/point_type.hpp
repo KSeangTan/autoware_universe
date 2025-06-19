@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef AUTOWARE__LIDAR_CENTERPOINT_PREPROCESS__POINT_TYPE_HPP_
+#ifndef AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__POINT_TYPE_HPP_
 #define AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__POINT_TYPE_HPP_
 
 #include <cstdint>
