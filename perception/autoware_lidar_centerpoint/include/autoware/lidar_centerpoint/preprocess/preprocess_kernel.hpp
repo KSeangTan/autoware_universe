@@ -16,7 +16,7 @@
 #define AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__PREPROCESS_KERNEL_HPP_
 
 #include "autoware/lidar_centerpoint/preprocess/point_type.hpp" 
-#include "autoware/lidar_centerpoint/preprocess/centerpoint_config.hpp"
+#include "autoware/lidar_centerpoint/centerpoint_config.hpp"
 
 #include "cuda.h"
 #include "cuda_runtime_api.h"
