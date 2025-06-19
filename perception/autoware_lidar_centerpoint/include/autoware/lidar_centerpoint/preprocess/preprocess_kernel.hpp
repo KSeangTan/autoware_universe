@@ -51,7 +51,7 @@ namespace autoware::lidar_centerpoint
 		private:
 			CenterPointConfig config_;
 			cudaStream_t stream_;
-	}
+	};
 } // namespace autoware::lidar_centerpoint
 
 #endif  // AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__PREPROCESS_KERNEL_HPP_
