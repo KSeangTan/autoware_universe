@@ -10807,8 +10807,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_11_5" id="__nav_11_5_label" tabindex="0">
@@ -10849,58 +10847,12 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../system/autoware_default_adapi_helpers/autoware_adapi_adaptors/">Autoware adapi adaptors</a>
+          <a href="../../system/autoware_default_adapi_helpers/autoware_automatic_pose_initializer/">Autoware automatic pose initializer</a>
           
         </div>
       
       <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_5_1_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_11_5_1">
-          <span class="md-nav__icon md-icon"></span>
-          Autoware adapi adaptors
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-      
-      
-        
-      
-      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11_5_2" >
-      
-      
-        
-          
-            
-          
-        
-      
-      
-        
-        
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="../../system/autoware_default_adapi_helpers/autoware_automatic_pose_initializer/">Autoware automatic pose initializer</a>
-          
-        </div>
-      
-      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_5_2_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_11_5_2">
           <span class="md-nav__icon md-icon"></span>
           Autoware automatic pose initializer
         </label>
@@ -13641,70 +13593,77 @@ Depending on the implementation of occupancy grid map, it can be called an outli
 <tr>
 <td>radius_search_2d_filter.search_radius</td>
 <td>float</td>
-<td>Radius when calculating the density</td>
+<td>Radius used when calculating the density.</td>
 <td>1.0</td>
-<td>N/A</td>
+<td>≥0.0</td>
 </tr>
 <tr>
 <td>radius_search_2d_filter.min_points_and_distance_ratio</td>
 <td>float</td>
-<td>Threshold value of the number of point clouds per radius when the distance from baselink is 1m, because the number of point clouds varies with the distance from baselink</td>
+<td>Threshold value of the number of point clouds per radius when the distance from the base link is 1m.</td>
 <td>400.0</td>
-<td>N/A</td>
+<td>≥0.0</td>
 </tr>
 <tr>
 <td>radius_search_2d_filter.min_points</td>
-<td>float</td>
-<td>Minimum number of point clouds per radius</td>
+<td>integer</td>
+<td>Minimum number of point clouds per radius.</td>
 <td>4</td>
-<td>N/A</td>
+<td>≥1</td>
 </tr>
 <tr>
 <td>radius_search_2d_filter.max_points</td>
-<td>float</td>
-<td>Maximum number of point clouds per radius</td>
+<td>integer</td>
+<td>Maximum number of point clouds per radius.</td>
 <td>70</td>
-<td>N/A</td>
+<td>≥1</td>
 </tr>
 <tr>
 <td>radius_search_2d_filter.max_filter_points_nb</td>
-<td>float</td>
-<td>Maximum number of point clouds to be filtered</td>
+<td>integer</td>
+<td>Maximum number of point clouds to be filtered.</td>
 <td>15000</td>
-<td>N/A</td>
+<td>≥1</td>
 </tr>
 <tr>
 <td>map_frame</td>
 <td>string</td>
-<td>map frame id</td>
+<td>The frame ID for the map.</td>
 <td>map</td>
 <td>N/A</td>
 </tr>
 <tr>
 <td>base_link_frame</td>
 <td>string</td>
-<td>base link frame id</td>
+<td>The frame ID for the base link.</td>
 <td>base_link</td>
 <td>N/A</td>
 </tr>
 <tr>
 <td>cost_threshold</td>
-<td>float</td>
-<td>Cost threshold of occupancy grid map (0~100). 100 means 100% probability that there is an obstacle, close to 50 means that it is indistinguishable whether it is an obstacle or free space, 0 means that there is no obstacle</td>
+<td>integer</td>
+<td>Cost threshold for occupancy grid map (0-100), where 100 indicates a high probability of an obstacle.</td>
 <td>45</td>
-<td>N/A</td>
+<td>≥0<br>≤100</td>
 </tr>
 <tr>
 <td>use_radius_search_2d_filter</td>
 <td>boolean</td>
-<td>Whether or not to apply density-based outlier filters to objects that are judged to have low probability of occupancy on the occupancy grid map</td>
+<td>Enable or disable the 2D radius search filter.</td>
 <td>True</td>
 <td>N/A</td>
 </tr>
 <tr>
 <td>enable_debugger</td>
 <td>boolean</td>
-<td>Whether to output the point cloud for debugging</td>
+<td>Enable or disable debugging output.</td>
+<td>False</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>publish_processing_time_detail</td>
+<td>boolean</td>
+<td>Enable or disable publishing of processing time details.</td>
 <td>False</td>
 <td>N/A</td>
 </tr>
