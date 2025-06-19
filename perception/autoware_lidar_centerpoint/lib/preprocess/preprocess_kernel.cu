@@ -60,7 +60,7 @@ namespace autoware::lidar_centerpoint
 		float input_x = input_point->x;
 		float input_y = input_point->y;
 		float input_z = input_point->z;
-		auto input_intensity = static_cast<float>(input_point->intensity);
+		// auto input_intensity = static_cast<float>(input_point->intensity);
 
 		output_points[point_idx * num_features] = transform_array[0] * input_x +
 												transform_array[4] * input_y +
