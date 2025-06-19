@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "autoware/lidar_centerpoint/preprocess/point_type.hpp"
 #include "autoware/lidar_centerpoint/preprocess/voxel_generator.hpp"
 
 #include "autoware/lidar_centerpoint/centerpoint_trt.hpp"
@@ -77,9 +78,15 @@ std::size_t VoxelGenerator::generateSweepPoints(float * points_d)
 
     static_assert(std::is_same<decltype(affine_past2current.matrix()), Eigen::Matrix4f &>::value);
     static_assert(!Eigen::Matrix4f::IsRowMajor, "matrices should be col-major.");
+
+	CHECK_CUDA_ERROR(cudaMemcpyAsync(
+      affine_past2current_d_.get(), affine_past2current.data(), AFF_MAT_SIZE * sizeof(float),
+      cudaMemcpyHostToDevice, stream_));
+    CHECK_CUDA_ERROR(cudaStreamSynchronize(stream_));
+
     pre_ptr_->generateSweepPoints_launch(
-      input_pointcloud_msg_ptr->data.get(), sweep_num_points,
-      time_lag, affine_past2current.matrix().data(),
+      reintepret_cast<InputPointType *>(input_pointcloud_msg_ptr->data.get()), sweep_num_points,
+      time_lag, affine_past2current_d_.get(),
       config_.point_feature_size_, points_d + output_offset);
 
     point_counter += sweep_num_points;
