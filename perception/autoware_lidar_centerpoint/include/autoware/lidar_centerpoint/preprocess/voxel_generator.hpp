@@ -15,7 +15,7 @@
 #ifndef AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__VOXEL_GENERATOR_HPP_
 #define AUTOWARE__LIDAR_CENTERPOINT__PREPROCESS__VOXEL_GENERATOR_HPP_
 
-#include "autoware/lidar_transfusion/cuda_utils.hpp"
+#include "autoware/lidar_centerpoint/cuda_utils.hpp"
 #include "autoware/lidar_centerpoint/centerpoint_config.hpp"
 #include "autoware/lidar_centerpoint/preprocess/pointcloud_densification.hpp"
 #include "autoware/lidar_transfusion/preprocess/preprocess_kernel.hpp"
@@ -35,7 +35,7 @@ public:
   explicit VoxelGeneratorTemplate(
     const DensificationParam & param, const CenterPointConfig & config);
 
-  virtual std::size_t generateSweepPoints(float * d_points, cudaStream_t stream) = 0;
+  virtual std::size_t generateSweepPoints(float * d_points) = 0;
 
   bool enqueuePointCloud(
     const std::shared_ptr<const cuda_blackboard::CudaPointCloud2> & input_pointcloud_msg_ptr,
@@ -58,7 +58,7 @@ class VoxelGenerator : public VoxelGeneratorTemplate
 public:
   using VoxelGeneratorTemplate::VoxelGeneratorTemplate;
 
-  std::size_t generateSweepPoints(float * d_points, cudaStream_t stream) override;
+  std::size_t generateSweepPoints(float * d_points) override;
 };
 
 }  // namespace autoware::lidar_centerpoint
