@@ -235,13 +235,13 @@ bool CenterPointTRT::preprocess(
     random_offset
   );
 
-  pre_ptr->generateVoxels_random_launch(
+  pre_ptr_->generateVoxels_random_launch(
     points_d_.get(), mask_d_.get(), voxels_buffer_d_.get());
 
-  pre_ptr->generateBaseFeatures_launch(
+  pre_ptr_->generateBaseFeatures_launch(
     mask_d_.get(), voxels_buffer_d_.get(), num_voxels_d_.get(), voxels_d_.get(), num_points_per_voxel_d_.get(), coordinates_d_.get()));
 
-  pre_ptr->generateFeatures_launch(
+  pre_ptr_->generateFeatures_launch(
     voxels_d_.get(), num_points_per_voxel_d_.get(), coordinates_d_.get(), num_voxels_d_.get(),
     encoder_in_features_d_.get());
 

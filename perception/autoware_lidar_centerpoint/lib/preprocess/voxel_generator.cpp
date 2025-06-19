@@ -52,41 +52,36 @@ bool VoxelGeneratorTemplate::enqueuePointCloud(
   return pd_ptr_->enqueuePointCloud(input_pointcloud_msg_ptr, tf_buffer);
 }
 
-std::size_t VoxelGenerator::generateSweepPoints(float * points_d)
+std::size_t VoxelGenerator::generateSweepPoints(cuda::unique_ptr<float[]> & points_d)
 {
-  std::size_t point_counter{0};
-  CHECK_CUDA_ERROR(cudaStreamSynchronize(stream_));
-
+  std::size_t point_counter = 0;
   for (auto pc_cache_iter = pd_ptr_->getPointCloudCacheIter(); !pd_ptr_->isCacheEnd(pc_cache_iter);
        pc_cache_iter++) {
-    auto sweep_num_points = pc_cache_iter->num_points;
-    auto output_offset = point_counter * config_.num_point_feature_size_;
+    const auto & input_pointcloud_msg_ptr = pc_cache_iter->input_pointcloud_msg_ptr;
+    auto sweep_num_points = input_pointcloud_msg_ptr->height * input_pointcloud_msg_ptr->width;
+	auto output_offset = point_counter * config_.num_point_feature_size_;
+    auto point_step = input_pointcloud_msg_ptr->point_step;
+    auto affine_past2current =
+      pd_ptr_->getAffineWorldToCurrent() * pc_cache_iter->affine_past2world;
+    float time_lag = static_cast<float>(
+      pd_ptr_->getCurrentTimestamp() -
+      rclcpp::Time(input_pointcloud_msg_ptr->header.stamp).seconds());
 
-    if (point_counter + sweep_num_points > static_cast<std::size_t>(config_.cloud_capacity_)) {
+    if (point_counter + sweep_num_points > config_.cloud_capacity_) {
       RCLCPP_WARN_STREAM(
-        rclcpp::get_logger("bevfusion"), "Exceeding cloud capacity. Used "
-                                           << pd_ptr_->getIdx(pc_cache_iter) << " out of "
-                                           << pd_ptr_->getCacheSize() << " sweep(s)");
+        rclcpp::get_logger(config_.logger_name_.c_str()),
+        "Requested number of points exceeds the maximum capacity. Current points = "
+          << point_counter);
       break;
     }
 
-    auto affine_past2current =
-      pd_ptr_->getAffineWorldToCurrent() * pc_cache_iter->affine_past2world;
     static_assert(std::is_same<decltype(affine_past2current.matrix()), Eigen::Matrix4f &>::value);
     static_assert(!Eigen::Matrix4f::IsRowMajor, "matrices should be col-major.");
+    generateSweepPoints_launch(
+      input_pointcloud_msg_ptr->data.get(), sweep_num_points,
+      time_lag, affine_past2current.matrix().data(),
+      config_.point_feature_size_, points_d + output_offset, stream_);
 
-    float time_lag = static_cast<float>(
-      pd_ptr_->getCurrentTimestamp() - rclcpp::Time(pc_cache_iter->header.stamp).seconds());
-
-    CHECK_CUDA_ERROR(cudaMemcpyAsync(
-      affine_past2current_d_.get(), affine_past2current.data(),
-      AFF_MAT_SIZE * sizeof(float), cudaMemcpyHostToDevice,
-      stream_));
-    CHECK_CUDA_ERROR(cudaStreamSynchronize(stream_));
-
-    pre_ptr_->generateSweepPoints_launch(
-      pc_cache_iter->data_d.get(), sweep_num_points, time_lag, affine_past2current_d_.get(),
-      points_d.get() + output_offset);
     point_counter += sweep_num_points;
   }
 

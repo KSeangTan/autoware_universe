@@ -33,9 +33,9 @@ class VoxelGeneratorTemplate
 public:
   virtual ~VoxelGeneratorTemplate() = default;
   explicit VoxelGeneratorTemplate(
-    const DensificationParam & param, const CenterPointConfig & config);
+    const DensificationParam & param, const CenterPointConfig & config, cudaStream_t & stream);
 
-  virtual std::size_t generateSweepPoints(float * d_points) = 0;
+  virtual std::size_t generateSweepPoints(cuda::unique_ptr<float[]> & points_d) = 0;
 
   bool enqueuePointCloud(
     const std::shared_ptr<const cuda_blackboard::CudaPointCloud2> & input_pointcloud_msg_ptr,
@@ -58,7 +58,7 @@ class VoxelGenerator : public VoxelGeneratorTemplate
 public:
   using VoxelGeneratorTemplate::VoxelGeneratorTemplate;
 
-  std::size_t generateSweepPoints(float * d_points) override;
+  std::size_t generateSweepPoints(cuda::unique_ptr<float[]> & points_d) override;
 };
 
 }  // namespace autoware::lidar_centerpoint
