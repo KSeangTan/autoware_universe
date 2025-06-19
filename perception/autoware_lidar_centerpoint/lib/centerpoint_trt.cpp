@@ -39,7 +39,7 @@ CenterPointTRT::CenterPointTRT(
   const DensificationParam & densification_param, const CenterPointConfig & config)
 : config_(config)
 {
-  vg_ptr_ = std::make_unique<VoxelGenerator>(densification_param, config_);
+  vg_ptr_ = std::make_unique<VoxelGenerator>(densification_param, config_, stream_);
   pre_ptr_ = std::make_unique<PreprocessCuda>(config_, stream_);
   post_proc_ptr_ = std::make_unique<PostProcessCUDA>(config_);
 
@@ -236,7 +236,7 @@ bool CenterPointTRT::preprocess(
   );
 
   pre_ptr_->generateVoxels_random_launch(
-    points_d_.get(), mask_d_.get(), voxels_buffer_d_.get());
+    points_d_.get(), config_.cloud_capacity_, mask_d_.get(), voxels_buffer_d_.get());
 
   pre_ptr_->generateBaseFeatures_launch(
     mask_d_.get(), voxels_buffer_d_.get(), num_voxels_d_.get(), voxels_d_.get(), num_points_per_voxel_d_.get(), coordinates_d_.get());
