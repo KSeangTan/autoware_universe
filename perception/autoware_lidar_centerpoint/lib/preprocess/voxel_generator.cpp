@@ -85,7 +85,7 @@ std::size_t VoxelGenerator::generateSweepPoints(float * points_d)
     CHECK_CUDA_ERROR(cudaStreamSynchronize(stream_));
 
     pre_ptr_->generateSweepPoints_launch(
-      reintepret_cast<InputPointType *>(input_pointcloud_msg_ptr->data.get()), sweep_num_points,
+      reinterpret_cast<InputPointType *>(input_pointcloud_msg_ptr->data.get()), sweep_num_points,
       time_lag, affine_past2current_d_.get(),
       config_.point_feature_size_, points_d + output_offset);
 
