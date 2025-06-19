@@ -10807,8 +10807,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_11_5" id="__nav_11_5_label" tabindex="0">
@@ -10849,58 +10847,12 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../system/autoware_default_adapi_helpers/autoware_adapi_adaptors/">Autoware adapi adaptors</a>
+          <a href="../../../system/autoware_default_adapi_helpers/autoware_automatic_pose_initializer/">Autoware automatic pose initializer</a>
           
         </div>
       
       <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_5_1_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_11_5_1">
-          <span class="md-nav__icon md-icon"></span>
-          Autoware adapi adaptors
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-      
-      
-        
-      
-      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11_5_2" >
-      
-      
-        
-          
-            
-          
-        
-      
-      
-        
-        
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../system/autoware_default_adapi_helpers/autoware_automatic_pose_initializer/">Autoware automatic pose initializer</a>
-          
-        </div>
-      
-      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_5_2_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_11_5_2">
           <span class="md-nav__icon md-icon"></span>
           Autoware automatic pose initializer
         </label>
@@ -13568,7 +13520,10 @@ j_{lat} = v_{lon}^3 * \frac{d\kappa}{ds} + 3 * v_{lon}^2 * a_{lon} * \kappa
 <li><strong>Distance deviation</strong> : invalid if the ego is too far from the trajectory</li>
 <li><strong>Longitudinal distance deviation</strong> : invalid if the trajectory is too far from ego in longitudinal direction</li>
 <li><strong>Forward trajectory length</strong> : invalid if the trajectory length is not enough to stop within a given deceleration</li>
-<li><strong>Yaw difference</strong> : invalid if the difference between the ego yaw and closest trajectory yaw is too large</li>
+<li><strong>Yaw deviation</strong> : invalid if the difference between the ego yaw and closest trajectory yaw is too large.<ul>
+<li>in general planning is not responsible for keeping a low yaw deviation, so this metric is checked only when the closest trajectory yaw changes by more than <code>nearest_yaw_trajectory_shift_required_for_checking</code> between successive trajectories.</li>
+</ul>
+</li>
 <li><strong>Trajectory Shift</strong> : invalid if the lat./long. distance between two consecutive trajectories near the Ego exceed the thresholds.</li>
 </ul>
 <p>The following features are to be implemented.</p>

@@ -10937,8 +10937,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_11_5" id="__nav_11_5_label" tabindex="0">
@@ -10979,58 +10977,12 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../../system/autoware_default_adapi_helpers/autoware_adapi_adaptors/">Autoware adapi adaptors</a>
+          <a href="../../../../system/autoware_default_adapi_helpers/autoware_automatic_pose_initializer/">Autoware automatic pose initializer</a>
           
         </div>
       
       <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_5_1_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_11_5_1">
-          <span class="md-nav__icon md-icon"></span>
-          Autoware adapi adaptors
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-      
-      
-        
-      
-      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_11_5_2" >
-      
-      
-        
-          
-            
-          
-        
-      
-      
-        
-        
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../../system/autoware_default_adapi_helpers/autoware_automatic_pose_initializer/">Autoware automatic pose initializer</a>
-          
-        </div>
-      
-      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_5_2_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_11_5_2">
           <span class="md-nav__icon md-icon"></span>
           Autoware automatic pose initializer
         </label>
@@ -13772,19 +13724,19 @@ Please refer to it for your parameter settings.</p>
 <td>If the detected object's distance to frame_id is less than the threshold, the fusion will be processed</td>
 </tr>
 <tr>
-<td><code>trust_object_distance</code></td>
+<td><code>strict_iou_fusion_distance</code></td>
 <td>double</td>
-<td>if the detected object's distance is less than the <code>trust_object_distance</code>, <code>trust_object_iou_mode</code> will be used, otherwise <code>non_trust_object_iou_mode</code> will be used</td>
+<td>if the detected object's distance is less than the <code>strict_iou_fusion_distance</code>, <code>strict_iou_match_mode</code> will be used, otherwise <code>rough_iou_match_mode</code> will be used</td>
 </tr>
 <tr>
-<td><code>trust_object_iou_mode</code></td>
+<td><code>strict_iou_match_mode</code></td>
 <td>string</td>
-<td>select mode from 3 options {<code>iou</code>, <code>iou_x</code>, <code>iou_y</code>} to calculate IoU in range of [<code>0</code>, <code>trust_distance</code>]. <br>  <code>iou</code>: IoU along x-axis and y-axis <br>  <code>iou_x</code>: IoU along x-axis <br>  <code>iou_y</code>: IoU along y-axis</td>
+<td>select mode from 3 options {<code>iou</code>, <code>iou_x</code>, <code>iou_y</code>} to calculate IoU in range of [<code>0</code>, <code>strict_iou_fusion_distance</code>]. <br>  <code>iou</code>: IoU along x-axis and y-axis <br>  <code>iou_x</code>: IoU along x-axis <br>  <code>iou_y</code>: IoU along y-axis</td>
 </tr>
 <tr>
-<td><code>non_trust_object_iou_mode</code></td>
+<td><code>rough_iou_match_mode</code></td>
 <td>string</td>
-<td>the IOU mode using in range of [<code>trust_distance</code>, <code>fusion_distance</code>] if <code>trust_distance</code> &lt; <code>fusion_distance</code></td>
+<td>the IOU mode using in range of [<code>strict_iou_fusion_distance</code>, <code>fusion_distance</code>] if <code>strict_iou_fusion_distance</code> &lt; <code>fusion_distance</code></td>
 </tr>
 <tr>
 <td><code>use_cluster_semantic_type</code></td>
