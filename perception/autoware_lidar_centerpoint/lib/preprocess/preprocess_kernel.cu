@@ -44,6 +44,9 @@ const std::size_t WARPS_PER_BLOCK = 4;
 
 namespace autoware::lidar_centerpoint
 {
+	PreprocessCuda::PreprocessCuda(
+		const CenterPointConfig & config, cudaStream_t stream): config_(config), stream_(config);
+
 	__global__ void generateSweepPoints_kernel(
 	const InputPointType * __restrict__ input_points, std::size_t points_size, float time_lag,
 	const float * transform_array, int num_features, float * __restrict__ output_points)
@@ -285,12 +288,6 @@ namespace autoware::lidar_centerpoint
 		}
 	}
 	
-	PreprocessCuda::PreprocessCuda(
-		const CenterPointConfig & config, cudaStream_t stream): stream_(stream), config_(config)
-	{
-
-	}
-
 	cudaError_t PreprocessCuda::generateSweepPoints_launch(
 	const InputPointType * input_points, std::size_t points_size, float time_lag,
 	const float * transform_array, float * output_points)
@@ -301,7 +298,7 @@ namespace autoware::lidar_centerpoint
 		assert(num_features == 4);
 
 		generateSweepPoints_kernel<<<blocks, threads, 0, stream_>>>(
-			input_points, points_size, time_lag, transform_array, config_.point_feature_size,
+			input_points, points_size, time_lag, transform_array, config_.point_feature_size_,
 			output_points);
 
 		cudaError_t err = cudaGetLastError();
@@ -346,15 +343,14 @@ namespace autoware::lidar_centerpoint
 	
 	// create 4 channels
 	cudaError_t PreprocessCuda::generateBaseFeatures_launch(
-	unsigned int * mask, float * voxels, unsigned int * pillar_num, float * voxel_features, float * voxel_num, int * voxel_idxs,
-	cudaStream_t stream)
+	unsigned int * mask, float * voxels, unsigned int * pillar_num, float * voxel_features, float * voxel_num, int * voxel_idxs)
 	{
 		// exchange x and y to process in a row-major order
 		dim3 threads = {32, 32};
 		dim3 blocks = {
 			(static_cast<unsigned int>(config_.grid_size_y_) + threads.x - 1) / threads.x, (static_cast<unsigned int>(config_.grid_size_x_) + threads.y - 1) / threads.y};
 
-		generateBaseFeatures_kernel<<<blocks, threads, 0, stream>>>(
+		generateBaseFeatures_kernel<<<blocks, threads, 0, stream_>>>(
 			mask, voxels, config_.grid_size_y_, config_.grid_size_x_, config_.max_voxel_size_, pillar_num, voxel_features, voxel_num,
 			voxel_idxs);
 		cudaError_t err = cudaGetLastError();

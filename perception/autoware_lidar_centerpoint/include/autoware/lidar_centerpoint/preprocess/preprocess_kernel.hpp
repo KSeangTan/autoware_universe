@@ -29,24 +29,24 @@ namespace autoware::lidar_centerpoint
 		public: 
 			PreprocessCuda(const CenterPointConfig &config, cudaStream_t &stream); 
 		
-		cudaError_t generateSweepPoints_launch(
-		const InputPointType * input_points, std::size_t points_size, float time_lag, 
-		const float * transform_array, float * output_points);
+			cudaError_t generateSweepPoints_launch(
+			const InputPointType * input_points, std::size_t points_size, float time_lag, 
+			const float * transform_array, float * output_points);
 
-		cudaError_t shufflePoints_launch(
-		const float * points, const unsigned int * indices, float * shuffled_points,
-		const std::size_t points_size, const std::size_t max_size, const std::size_t offset);
+			cudaError_t shufflePoints_launch(
+			const float * points, const unsigned int * indices, float * shuffled_points,
+			const std::size_t points_size, const std::size_t max_size, const std::size_t offset);
 
-		cudaError_t generateVoxels_random_launch(
-		const float * points, std::size_t points_size, unsigned int * mask, float * voxels);
+			cudaError_t generateVoxels_random_launch(
+			const float * points, std::size_t points_size, unsigned int * mask, float * voxels);
 
-		cudaError_t generateBaseFeatures_launch(
-		unsigned int * mask, float * voxels, unsigned int * pillar_num, float * voxel_features, 
-		float * voxel_num, int * voxel_idxs);
+			cudaError_t generateBaseFeatures_launch(
+			unsigned int * mask, float * voxels, unsigned int * pillar_num, float * voxel_features, 
+			float * voxel_num, int * voxel_idxs);
 
-		cudaError_t generateFeatures_launch(
-		const float * voxel_features, const float * voxel_num_points, const int * coords,
-		const unsigned int * num_voxels, float * features);
+			cudaError_t generateFeatures_launch(
+			const float * voxel_features, const float * voxel_num_points, const int * coords,
+			const unsigned int * num_voxels, float * features);
 		
 		private:
 			CenterPointConfig config_;
