@@ -80,7 +80,7 @@ std::size_t VoxelGenerator::generateSweepPoints(float * points_d)
     pre_ptr_->generateSweepPoints_launch(
       input_pointcloud_msg_ptr->data.get(), sweep_num_points,
       time_lag, affine_past2current.matrix().data(),
-      config_.point_feature_size_, points_d + output_offset, stream_);
+      config_.point_feature_size_, points_d.get() + output_offset);
 
     point_counter += sweep_num_points;
   }
