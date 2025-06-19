@@ -45,8 +45,8 @@ const std::size_t WARPS_PER_BLOCK = 4;
 namespace autoware::lidar_centerpoint
 {
 	PreprocessCuda::PreprocessCuda(
-		const CenterPointConfig & config, cudaStream_t stream): config_(config), stream_(stream) {
-			
+		const CenterPointConfig & config, cudaStream_t & stream): config_(config), stream_(stream) {
+
 		}
 
 	__global__ void generateSweepPoints_kernel(
@@ -56,11 +56,11 @@ namespace autoware::lidar_centerpoint
 		int point_idx = blockIdx.x * blockDim.x + threadIdx.x;
 		if (point_idx >= points_size) return;
 		
-		const InputPointType * input_points = &input_points[point_idx];
-		float input_x = input_points->x;
-		float input_y = input_points->y;
-		float input_z = input_points->z;
-		auto input_intensity = static_cast<float>(input_points->intensity);
+		const InputPointType * input_point = &input_points[point_idx];
+		float input_x = input_point->x;
+		float input_y = input_point->y;
+		float input_z = input_point->z;
+		auto input_intensity = static_cast<float>(input_point->intensity);
 
 		output_points[point_idx * num_features] = transform_array[0] * input_x +
 												transform_array[4] * input_y +
