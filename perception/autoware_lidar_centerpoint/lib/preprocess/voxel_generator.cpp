@@ -52,7 +52,7 @@ bool VoxelGeneratorTemplate::enqueuePointCloud(
   return pd_ptr_->enqueuePointCloud(input_pointcloud_msg_ptr, tf_buffer);
 }
 
-std::size_t VoxelGenerator::generateSweepPoints(cuda::unique_ptr<float[]> & points_d)
+std::size_t VoxelGenerator::generateSweepPoints(float * points_d)
 {
   std::size_t point_counter = 0;
   for (auto pc_cache_iter = pd_ptr_->getPointCloudCacheIter(); !pd_ptr_->isCacheEnd(pc_cache_iter);

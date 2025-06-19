@@ -239,7 +239,7 @@ bool CenterPointTRT::preprocess(
     points_d_.get(), mask_d_.get(), voxels_buffer_d_.get());
 
   pre_ptr_->generateBaseFeatures_launch(
-    mask_d_.get(), voxels_buffer_d_.get(), num_voxels_d_.get(), voxels_d_.get(), num_points_per_voxel_d_.get(), coordinates_d_.get()));
+    mask_d_.get(), voxels_buffer_d_.get(), num_voxels_d_.get(), voxels_d_.get(), num_points_per_voxel_d_.get(), coordinates_d_.get());
 
   pre_ptr_->generateFeatures_launch(
     voxels_d_.get(), num_points_per_voxel_d_.get(), coordinates_d_.get(), num_voxels_d_.get(),
