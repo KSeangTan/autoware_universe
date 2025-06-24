@@ -8,20 +8,20 @@
       
       
       
-        <link rel="canonical" href="https://autowarefoundation.github.io/autoware_universe/latest/planning/sampling_based_planner/autoware_bezier_sampler/">
+        <link rel="canonical" href="https://autowarefoundation.github.io/autoware_universe/latest/planning/planning_validator/autoware_planning_validator_intersection_collision_checker/">
       
       
-        <link rel="prev" href="../../planning_validator/autoware_planning_validator_intersection_collision_checker/">
+        <link rel="prev" href="../autoware_planning_validator/">
       
       
-        <link rel="next" href="../autoware_frenet_planner/">
+        <link rel="next" href="../../sampling_based_planner/autoware_bezier_sampler/">
       
       <link rel="icon" href="../../../docs/assets/images/autoware-foundation.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.20">
     
     
       
-        <title>Bézier sampler - Autoware Universe Documentation</title>
+        <title>Intersection Collision Checker - Autoware Universe Documentation</title>
       
     
     
@@ -77,7 +77,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#bezier-sampler" class="md-skip">
+        <a href="#intersection-collision-checker" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Bézier sampler
+              Intersection Collision Checker
             
           </span>
         </div>
@@ -8345,7 +8345,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../autoware_path_sampler" class="md-nav__link">
+      <a href="../../sampling_based_planner/autoware_path_sampler" class="md-nav__link">
         Path Sample
       </a>
     </li>
@@ -8359,7 +8359,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../autoware_sampler_common" class="md-nav__link">
+      <a href="../../sampling_based_planner/autoware_sampler_common" class="md-nav__link">
         Common library
       </a>
     </li>
@@ -8373,7 +8373,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../autoware_frenet_planner" class="md-nav__link">
+      <a href="../../sampling_based_planner/autoware_frenet_planner" class="md-nav__link">
         Frenet Planner
       </a>
     </li>
@@ -8387,7 +8387,7 @@
   
   
     <li class="md-nav__item">
-      <a href="." class="md-nav__link">
+      <a href="../../sampling_based_planner/autoware_bezier_sampler" class="md-nav__link">
         Bezier Sampler
       </a>
     </li>
@@ -13593,6 +13593,61 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#inner-workings" class="md-nav__link">
+    Inner workings
+  </a>
+  
+    <nav class="md-nav" aria-label="Inner workings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#target-lanelet-selection" class="md-nav__link">
+    Target Lanelet Selection
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    Parameters
+  </a>
+  
+    <nav class="md-nav" aria-label="Parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lanelet-selection-flags" class="md-nav__link">
+    Lanelet Selection Flags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pointcloud-parameters" class="md-nav__link">
+    Pointcloud Parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -13609,8 +13664,259 @@
   
 
 
-<div><h1 id="bezier-sampler">Bézier sampler<a class="headerlink" href="#bezier-sampler" title="Permanent link">#</a></h1>
-<p>Implementation of bézier curves and their generation following the sampling strategy from <a href="https://ieeexplore.ieee.org/document/8932495">https://ieeexplore.ieee.org/document/8932495</a></p></div>
+<div><h1 id="intersection-collision-checker">Intersection Collision Checker<a class="headerlink" href="#intersection-collision-checker" title="Permanent link">#</a></h1>
+<p>The <code>intersection_collision_checker</code> is a plugin module of <code>autoware_planning_validator</code> node. It is responsible for validating the planning trajectory at intersections by verifying that it does NOT lead to a collision with other road vehicles.</p>
+<p>The check is executed only when:</p>
+<ul>
+<li>Ego is approaching a <code>turn_direction</code> lane</li>
+<li>Ego trajectory intersects with lanes other than <code>route_lanelets</code></li>
+</ul>
+<h2 id="inner-workings">Inner workings<a class="headerlink" href="#inner-workings" title="Permanent link">#</a></h2>
+<p>The following steps describe the general approach taken to check for collisions at intersections:</p>
+<ul>
+<li>Compute ego trajectory lanelets and turning direction</li>
+<li>Compute target lanelets to check</li>
+<li>For each target lanelet set the <code>point_of_overlap</code> (i.e where ego trajectory intersects the lanelet), and compute ego's time to reach it.</li>
+<li>Filter obstacle pointclouds to remove unwanted points</li>
+<li>For each target lanelet:<ul>
+<li>process pointcloud points within lanelet and measure distance to <code>point_of_overlap</code></li>
+<li>estimate object velocity based on changes in distance measurements</li>
+<li>estimate object's time to reach <code>point_of_overlap</code></li>
+<li>compare object's and ego's time to reach to determine if there is a risk of collision.</li>
+</ul>
+</li>
+</ul>
+<p>If it's determined that there is a risk of collision, a diagnostic is published to trigger an emergency stop by the MRM Handler.</p>
+<h3 id="target-lanelet-selection">Target Lanelet Selection<a class="headerlink" href="#target-lanelet-selection" title="Permanent link">#</a></h3>
+<h4 id="right-turn">Right turn<a class="headerlink" href="#right-turn" title="Permanent link">#</a></h4>
+<p>To get the target lanelets, we first find all lanelets intersecting with ego trajectory. Then we filter out:</p>
+<ul>
+<li>Lanelets that are <code>route_lanelets</code></li>
+<li>Lanelets with a "time to reach" exceeding the time horizon</li>
+<li>Lanelets that have <code>turn_direction</code> attribute and are not <code>STRAIGHT</code>. (If parameter <code>right_turn.check_turning_lanes</code> is <strong>FALSE</strong>)</li>
+<li>Lanelets that are determined to be <strong>crossing</strong> lanes. (If parameter <code>right_turn.check_crossing_lanes</code> is <strong>FALSE</strong>)</li>
+</ul>
+<p>Target lanelets are then expanded, if necessary, up to <code>detection_range</code></p>
+<p>The image below shows the target lanelets at a right turn intersection. (<code>right_turn.check_turning_lanes</code> set to <strong>FALSE</strong>)</p>
+<p><img alt="right-turn-target-lanes" src="images/right_turn_target_lanelets.png"></p>
+<h4 id="left-turn">Left turn<a class="headerlink" href="#left-turn" title="Permanent link">#</a></h4>
+<p>To get the target lanelets in case of a left turn:</p>
+<ul>
+<li>First we find the <code>turn_direction</code> lanelet from the Ego trajectory lanelets</li>
+<li>Then we find the next lanelet "destination_lanelet" following the <code>turn_direction</code> lanelet</li>
+<li>We then get all lanelets preceding the "destination_lanelet" and filter out:<ul>
+<li>Lanelets that are <code>route_lanelets</code></li>
+<li>Lanelets with a "time to reach" exceeding the time horizon</li>
+<li>Lanelets that have <code>turn_direction</code> attribute and are not <code>STRAIGHT</code>. (If parameter <code>left_turn.check_turning_lanes</code> is <strong>FALSE</strong>)</li>
+</ul>
+</li>
+</ul>
+<p>Target lanelets are then expanded, if necessary, up to <code>detection_range</code></p>
+<p>The image below shows the target lanelets at a left turn intersection. (<code>left.check_turning_lanes</code> set to <strong>TRUE</strong>)</p>
+<p><img alt="left-turn-target-lanes" src="images/left_turn_target_lanelets.png"></p>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th>Unit</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>enable</code></td>
+<td>[-]</td>
+<td>bool</td>
+<td>Flag to enable/disable the check globally</td>
+<td>true</td>
+</tr>
+<tr>
+<td align="left"><code>detection_range</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Range of detection from ego position, pointcloud points beyond this range are filtered out</td>
+<td>50.0</td>
+</tr>
+<tr>
+<td align="left"><code>ttc_threshold</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Threshold value for the difference between ego and object reach times to trigger and a stop</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td align="left"><code>ego_deceleration</code></td>
+<td>[m/ss]</td>
+<td>double</td>
+<td>Ego deceleration relate used to estimate ego stopping time</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td align="left"><code>min_time_horizon</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Minimum time horizon to check ahead along ego trajectory</td>
+<td>10.0</td>
+</tr>
+<tr>
+<td align="left"><code>timeout</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Duration to keep stop decision after collision is no longer detected</td>
+<td>1.0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="lanelet-selection-flags">Lanelet Selection Flags<a class="headerlink" href="#lanelet-selection-flags" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th>Unit</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>right_turn.enable</code></td>
+<td>[-]</td>
+<td>bool</td>
+<td>Flag to enable/disable the check at right turns</td>
+<td>true</td>
+</tr>
+<tr>
+<td align="left"><code>right_turn.check_crossing_lanes</code></td>
+<td>[-]</td>
+<td>bool</td>
+<td>Flag to enable/disable checking crossing lanes</td>
+<td>true</td>
+</tr>
+<tr>
+<td align="left"><code>right_turn.check_turn_lanes</code></td>
+<td>[-]</td>
+<td>bool</td>
+<td>Flag to enable/disable checking turning lanes</td>
+<td>true</td>
+</tr>
+<tr>
+<td align="left"><code>right_turn.crossing_lane_angle_th</code></td>
+<td>[rad]</td>
+<td>double</td>
+<td>Angle threshold for determining crossing lanes</td>
+<td>0.785398</td>
+</tr>
+<tr>
+<td align="left"><code>left_turn.enable</code></td>
+<td>[-]</td>
+<td>bool</td>
+<td>Flag to enable/disable the check at left turns</td>
+<td>true</td>
+</tr>
+<tr>
+<td align="left"><code>left_turn.check_turn_lanes</code></td>
+<td>[-]</td>
+<td>bool</td>
+<td>Flag to enable/disable checking turning lanes</td>
+<td>true</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pointcloud-parameters">Pointcloud Parameters<a class="headerlink" href="#pointcloud-parameters" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th>Unit</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>pointcloud.height_buffer</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Height offset to add above ego vehicle height when filtering pointcloud points</td>
+<td>true</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.min_height</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Minimum height threshold for filtering pointcloud points</td>
+<td>50.0</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.voxel_grid_filter.x</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>x value for voxel leaf size</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.voxel_grid_filter.y</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>y value for voxel leaf size</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.voxel_grid_filter.z</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>z value for voxel leaf size</td>
+<td>10.0</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.clustering.tolerance</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Distance tolerance between two points in a cluster</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.clustering.min_height</code></td>
+<td>[m]</td>
+<td>double</td>
+<td>Minimum height of a cluster to be considered as a target</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.clustering.min_size</code></td>
+<td>[-]</td>
+<td>double</td>
+<td>Minimum number of points in a cluster to be considered as a target</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.clustering.max_size</code></td>
+<td>[-]</td>
+<td>double</td>
+<td>Maximum number of points in a cluster to be considered as a target</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.observation_time</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Minimum detection time for a pointcloud object to be considered reliable</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td align="left"><code>pointcloud.latency</code></td>
+<td>[s]</td>
+<td>double</td>
+<td>Time delay used to compensate for latency in pointcloud data</td>
+<td>1.0</td>
+</tr>
+</tbody>
+</table></div>
 
 
 
@@ -13637,7 +13943,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../planning_validator/autoware_planning_validator_intersection_collision_checker/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Intersection Collision Checker" rel="prev">
+          <a href="../autoware_planning_validator/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Planning Validator" rel="prev">
             <div class="md-footer__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
             </div>
@@ -13646,20 +13952,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Intersection Collision Checker
+                Planning Validator
               </div>
             </div>
           </a>
         
         
           
-          <a href="../autoware_frenet_planner/" class="md-footer__link md-footer__link--next" aria-label="Next: Frenet planner" rel="next">
+          <a href="../../sampling_based_planner/autoware_bezier_sampler/" class="md-footer__link md-footer__link--next" aria-label="Next: Bézier sampler" rel="next">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Frenet planner
+                Bézier sampler
               </div>
             </div>
             <div class="md-footer__button md-icon">
