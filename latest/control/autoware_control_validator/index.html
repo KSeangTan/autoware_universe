@@ -13713,7 +13713,10 @@ The listed features below does not always correspond to the latest implementatio
 <ul>
 <li><strong>Lateral jerk</strong> : invalid when the lateral jerk exceeds the configured threshold. The validation uses the vehicle's velocity and steering angle rate to calculate the resulting lateral jerk. The calculation assumes constant velocity (acceleration is zero).</li>
 <li><strong>Deviation check between reference trajectory and predicted trajectory</strong> : invalid when the largest deviation between the predicted trajectory and reference trajectory is greater than the given threshold.</li>
-<li><strong>Yaw deviation</strong>: invalid when the difference between the yaw of the ego vehicle and the nearest (interpolated) trajectory yaw is greater than the given threshold.</li>
+<li><strong>Yaw deviation</strong>: invalid when the difference between the yaw of the ego vehicle and the nearest (interpolated) trajectory yaw is greater than the given threshold.<ul>
+<li>2 thresholds are implemented, one to trigger a warning diagnostic, and one to trigger an error diagnostic.</li>
+</ul>
+</li>
 </ul>
 <p><img alt="trajectory_deviation" src="image/trajectory_deviation.drawio.svg"></p>
 <h2 id="inputsoutputs">Inputs/Outputs<a class="headerlink" href="#inputsoutputs" title="Permanent link">#</a></h2>
@@ -13881,10 +13884,16 @@ The listed features below does not always correspond to the latest implementatio
 <td align="left">0.2</td>
 </tr>
 <tr>
-<td align="left"><code>thresholds.yaw_deviation</code></td>
+<td align="left"><code>thresholds.yaw_deviation_error</code></td>
 <td align="left">double</td>
 <td align="left">threshold angle to validate the vehicle yaw related to the nearest trajectory yaw [rad]</td>
 <td align="left">1.0</td>
+</tr>
+<tr>
+<td align="left"><code>thresholds.yaw_deviation_warn</code></td>
+<td align="left">double</td>
+<td align="left">threshold angle to trigger a WARN diagnostic [rad]</td>
+<td align="left">0.5</td>
 </tr>
 </tbody>
 </table></div>
