@@ -13971,10 +13971,10 @@
 <td>TensorRT inference precision: <code>fp32</code> or <code>fp16</code></td>
 </tr>
 <tr>
-<td><code>post_process_params.score_threshold</code></td>
-<td>double</td>
-<td><code>0.4</code></td>
-<td>detected objects with score less than threshold are ignored</td>
+<td><code>post_process_params.score_thresholds</code></td>
+<td>list[double]</td>
+<td>[0.35, 0.35, 0.35, 0.35, 0.35]</td>
+<td>detected objects with score less than their label threshold are ignored.</td>
 </tr>
 <tr>
 <td><code>post_process_params.yaw_norm_thresholds</code></td>
