@@ -9,18 +9,18 @@
     max_points_per_voxel: 10
     use_intensity: false
 
-    d_bound: [1.0, 134.0, 1.4]
+    d_bound: [1.0, 130.0, 1.0]
     x_bound: [-122.4, 122.4, 0.68]
     y_bound: [-122.4, 122.4, 0.68]
     z_bound: [-10.0, 10.0, 20.0]
-    num_cameras: 6
+    num_cameras: 5
     raw_image_height: 1080
     raw_image_width: 1440
-    img_aug_scale_x: 0.4
-    img_aug_scale_y: 0.4
-    roi_height: 384
-    roi_width: 576
-    features_height: 48
-    features_width: 72
-    num_depth_features: 95
+    img_aug_scale_x: 0.4445
+    img_aug_scale_y: 0.4445
+    roi_height: 480
+    roi_width: 640
+    features_height: 60
+    features_width: 80
+    num_depth_features: 133
     image_feature_channel: 256

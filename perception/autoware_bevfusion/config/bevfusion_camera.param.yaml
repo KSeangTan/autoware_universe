@@ -10,10 +10,10 @@
     onnx_path: "$(var model_path)/bevfusion_lidar.onnx"
     engine_path: "$(var model_path)/bevfusion_lidar.engine"
 
-    # image backbone network (lidar-only mode enabled when all three parameters are empty)
-    image_backbone_onnx_path: ""
-    image_backbone_engine_path: ""
-    image_backbone_trt_precision: ""
+    # image backbone network (camera/fusion mode enabled when all three parameters are non-empty)
+    image_backbone_onnx_path: "$(var model_path)/bevfusion_image_backbone.onnx"
+    image_backbone_engine_path: "$(var model_path)/bevfusion_image_backbone.engine"
+    image_backbone_trt_precision: fp16
 
     # pre-process params
     densification_num_past_frames: 1
