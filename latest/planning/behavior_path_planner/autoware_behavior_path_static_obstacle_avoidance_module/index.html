@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../../docs/assets/images/autoware-foundation.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
     
     
       
@@ -9443,6 +9443,8 @@
       
         
       
+        
+      
     
     
     
@@ -9505,6 +9507,34 @@
     
   
     RefineBySpeed
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../perception/autoware_predicted_path_postprocessor/docs/refine_penetration_by_static_objects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RefinePenetrationByStaticObjects
   
 
     
@@ -15972,7 +16002,7 @@
   <span class="md-ellipsis">
     
   
-    Macro Rendering Error
+    cuda_pointcloud_preprocessor
   
 
     
@@ -16028,7 +16058,7 @@
   <span class="md-ellipsis">
     
   
-    Macro Rendering Error
+    cuda_voxel_grid_downsample_filter
   
 
     
@@ -24923,6 +24953,13 @@ To solve that, this module provides a parameter for the minimum avoidance speed,
 <td>['auto', 'manual', 'ignore']</td>
 </tr>
 <tr>
+<td>avoidance_for_close_vehicle.policy</td>
+<td>string</td>
+<td>Ego behavior policy for close vehicle (stopped ego with insufficient avoidance distance). 'auto': avoid automatically in RTC AUTO mode. 'manual': generate candidate path and wait for operator approval. 'ignore': never avoid.</td>
+<td>ignore</td>
+<td>['auto', 'manual', 'ignore']</td>
+</tr>
+<tr>
 <td>intersection.yaw_deviation</td>
 <td>float</td>
 <td>Yaw deviation threshold param to judge if the object is not merging or deviating vehicle.</td>
@@ -25336,13 +25373,6 @@ To solve that, this module provides a parameter for the minimum avoidance speed,
 <td>N/A</td>
 </tr>
 <tr>
-<td>yield.enable_signalling_during_yield</td>
-<td>boolean</td>
-<td>Flag to enable signalling during yield maneuver.</td>
-<td>false</td>
-<td>N/A</td>
-</tr>
-<tr>
 <td>cancel.enable</td>
 <td>boolean</td>
 <td>Flag to enable cancel maneuver.</td>
@@ -25390,6 +25420,13 @@ To solve that, this module provides a parameter for the minimum avoidance speed,
 <td>if true, module doesn't wait deceleration and outputs avoidance path by best effort margin.</td>
 <td>true</td>
 <td>N/A</td>
+</tr>
+<tr>
+<td>policy.candidate_path_turn_signal</td>
+<td>string</td>
+<td>policy for turn signal output during planWaitingApproval (candidate path). 'none': never output turn signal for candidate paths. 'stopped_candidate': output turn signal only when the vehicle is stopped and a candidate path exists (default behavior). 'all_candidate': always output turn signal whenever a candidate path exists.</td>
+<td>none</td>
+<td>['none', 'stopped_candidate', 'all_candidate']</td>
 </tr>
 <tr>
 <td>lateral.velocity</td>
