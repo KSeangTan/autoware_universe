@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../../../docs/assets/images/autoware-foundation.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -22839,6 +22839,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#stop-point-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stop Point Handling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stop Point Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hard-position-constraint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hard Position Constraint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#velocity-profile-preservation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Velocity Profile Preservation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#post-processing" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -23172,12 +23211,32 @@ where σ(x) = 1 / (1 + exp(-x))
            (0.3 m/s)
              speed
 </code></pre></div>
+<h2 id="stop-point-handling">Stop Point Handling<a class="headerlink" href="#stop-point-handling" title="Permanent link">#</a></h2>
+<p>When <code>TrajectoryPointFixer</code> detects a deceleration-to-stop zone, it populates the shared
+<code>SemanticSpeedTracker</code> with the range of points covering the deceleration. The QP smoother
+uses this information in two ways:</p>
+<h3 id="hard-position-constraint">Hard Position Constraint<a class="headerlink" href="#hard-position-constraint" title="Permanent link">#</a></h3>
+<p>Each detected stop point is added as an equality constraint in the OSQP problem, pinning its
+position regardless of the smoothness weight:</p>
+<div class="highlight"><pre><span></span><code>p[stop_idx] = p[stop_idx]^orig    (hard constraint)
+</code></pre></div>
+<p>This prevents the smoother from displacing the vehicle's intended stop position.</p>
+<h3 id="velocity-profile-preservation">Velocity Profile Preservation<a class="headerlink" href="#velocity-profile-preservation" title="Permanent link">#</a></h3>
+<p>After the geometric velocity recalculation and moving average, the planner's original velocity
+profile is restored for all points in detected stop approach ranges:</p>
+<div class="highlight"><pre><span></span><code>v[i] = input_trajectory[i].v    (for i in stop approach range)
+v[stop_idx] = 0.0               (stop forced to zero unconditionally)
+</code></pre></div>
+<p>This ensures the downstream jerk smoother (<code>TrajectoryVelocityOptimizer</code>) receives the correct
+<code>v_ref</code> profile and can plan a kinematically feasible deceleration to zero.</p>
 <h2 id="post-processing">Post-Processing<a class="headerlink" href="#post-processing" title="Permanent link">#</a></h2>
-<p>After QP optimization solves for smoothed positions, the following are recalculated:</p>
+<p>After QP optimization solves for smoothed positions, the following are applied in order:</p>
 <ol>
 <li><strong>Orientation</strong>: Computed from path tangent between consecutive points</li>
-<li><strong>Velocity</strong>: Derived from position differences and time step</li>
-<li><strong>Velocity smoothing</strong>: 3-point moving average to reduce numerical noise</li>
+<li><strong>Velocity</strong>: Derived from position differences and time step (<code>v[i] = ds/dt</code>)</li>
+<li><strong>Velocity smoothing</strong>: 3-point moving average to reduce numerical differentiation noise</li>
+<li><strong>Stop zone restoration</strong>: Input velocities restored for detected stop approach ranges; stop
+   point forced to zero</li>
 <li><strong>Acceleration</strong>: Derived from velocity differences</li>
 </ol>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
@@ -23188,8 +23247,6 @@ where σ(x) = 1 / (1 + exp(-x))
 <li>Higher values → smoother but more deviation from original path</li>
 </ul>
 </li>
-</ul>
-<ul>
 <li><code>weight_fidelity</code> (default: 1.0)<ul>
 <li>Baseline fidelity weight (used when velocity-based feature disabled)</li>
 <li>Higher values → closer to original path</li>
@@ -23203,29 +23260,21 @@ where σ(x) = 1 / (1 + exp(-x))
 <li>Set to <code>true</code> to enable feature</li>
 </ul>
 </li>
-</ul>
-<ul>
 <li><code>velocity_threshold_mps</code> (default: 0.3)<ul>
 <li>Speed at which sigmoid transitions (midpoint)</li>
 <li>Lower values → earlier transition to high fidelity</li>
 </ul>
 </li>
-</ul>
-<ul>
 <li><code>sigmoid_sharpness</code> (default: 50.0)<ul>
 <li>Controls transition steepness</li>
 <li>Range: [1, 100], higher = sharper step-like transition</li>
 </ul>
 </li>
-</ul>
-<ul>
 <li><code>min_fidelity_weight</code> (default: 0.01)<ul>
 <li>Weight applied at very low speeds</li>
 <li>Lower values → more aggressive smoothing when stopped/slow</li>
 </ul>
 </li>
-</ul>
-<ul>
 <li><code>max_fidelity_weight</code> (default: 1.0)<ul>
 <li>Weight applied at high speeds</li>
 <li>Higher values → stronger preservation of planner path</li>
@@ -23240,8 +23289,6 @@ where σ(x) = 1 / (1 + exp(-x))
 <li>Set to 0 to allow all points to be optimized (may cause initial state discontinuities)</li>
 </ul>
 </li>
-</ul>
-<ul>
 <li><code>num_constrained_points_end</code> (default: 0)<ul>
 <li>Number of points from trajectory end to fix as hard constraints</li>
 <li>Set to 0 for maximum smoothness at trajectory end</li>
@@ -23255,20 +23302,14 @@ where σ(x) = 1 / (1 + exp(-x))
 <li>Time discretization for velocity/acceleration calculations</li>
 </ul>
 </li>
-</ul>
-<ul>
 <li><code>osqp_eps_abs</code> / <code>osqp_eps_rel</code> (default: 1e-4)<ul>
 <li>OSQP solver convergence tolerances</li>
 </ul>
 </li>
-</ul>
-<ul>
 <li><code>osqp_max_iter</code> (default: 100)<ul>
 <li>Maximum solver iterations</li>
 </ul>
 </li>
-</ul>
-<ul>
 <li><code>osqp_verbose</code> (default: false)<ul>
 <li>Enable OSQP debug output</li>
 </ul>
@@ -23281,8 +23322,6 @@ where σ(x) = 1 / (1 + exp(-x))
   deriving them from the smoothed path tangent</li>
 </ul>
 </li>
-</ul>
-<ul>
 <li><code>max_distance_for_orientation_m</code> (default: 5.0)<ul>
 <li>Maximum search distance for nearest-neighbor orientation matching [m]</li>
 </ul>
@@ -23341,7 +23380,9 @@ ros2<span class="w"> </span>topic<span class="w"> </span><span class="nb">echo</
 <h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">#</a></h2>
 <ol>
 <li><strong>Path deviation</strong>: Heavy smoothing can cause deviation from original path</li>
-<li><strong>Velocity discontinuities</strong>: Velocity is recalculated, may differ from planner intent</li>
+<li><strong>Velocity outside stop zones differs from planner intent</strong>: Velocity is recalculated from
+   smoothed geometry for normal trajectory segments; only detected stop approach zones preserve
+   the planner's velocity profile</li>
 <li><strong>Computational cost</strong>: QP solve adds overhead compared to simpler smoothers</li>
 <li><strong>Parameter sensitivity</strong>: Requires tuning for specific vehicle dynamics</li>
 </ol>

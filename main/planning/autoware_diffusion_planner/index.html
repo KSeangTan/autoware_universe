@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../docs/assets/images/autoware-foundation.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -23206,6 +23206,20 @@ diffusion_planner.onnx<span class="w"> </span>diffusion_planner.param.json
 <td>N/A</td>
 </tr>
 <tr>
+<td>delay_step</td>
+<td>integer</td>
+<td>Input delay step for inference</td>
+<td>0</td>
+<td>≥0</td>
+</tr>
+<tr>
+<td>line_string_max_step_m</td>
+<td>float</td>
+<td>Maximum arc-length step per model point when resampling line strings [m]. Smaller values produce more fixed-size sub-segments per line string.</td>
+<td>5.0</td>
+<td>&gt;0</td>
+</tr>
+<tr>
 <td>use_time_interpolation</td>
 <td>boolean</td>
 <td>Whether to interpolate ego past trajectory at regular time intervals</td>
@@ -23223,6 +23237,13 @@ diffusion_planner.onnx<span class="w"> </span>diffusion_planner.param.json
 <td>debug_params.publish_debug_route</td>
 <td>boolean</td>
 <td>Publish debug route markers</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>debug_params.publish_debug_linestrings</td>
+<td>boolean</td>
+<td>Publish debug linestring markers</td>
 <td>True</td>
 <td>N/A</td>
 </tr>
@@ -23390,6 +23411,12 @@ The model version is defined either by the directory name provided to the node o
 <td><strong>3.1</strong></td>
 <td>2026/03/05</td>
 <td>- ONNX simplified model for faster TRT engine build and reduced GPU memory. <br>- Same weights as v3.0 (no retraining).</td>
+<td>OK</td>
+</tr>
+<tr>
+<td><strong>4.0</strong></td>
+<td>2026/03/23</td>
+<td>- Added <code>delay</code> input for Real-Time Chunking (RTC): reuses first N timesteps from the previous prediction for trajectory continuity. <br>- Added one-hot type encoding for polygons (<code>intersection_area</code>) and line strings (<code>stop_line</code>, <code>road_border</code>). <br>- Increased <code>NUM_LINE_STRINGS</code> from 10 to 60. <br>- Added line string resampling (<code>line_string_max_step_m</code>). <br>- Added debug visualization for line strings.</td>
 <td>OK</td>
 </tr>
 </tbody>
