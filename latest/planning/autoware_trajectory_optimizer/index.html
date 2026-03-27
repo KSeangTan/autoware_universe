@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../docs/assets/images/autoware-foundation.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -23053,6 +23053,13 @@ known limitations, see <a href="docs/trajectory_optimizer_specification/">docs/t
 <td>float</td>
 <td>Minimum distance threshold for merging close proximity points [m]</td>
 <td>0.05</td>
+<td>≥0</td>
+</tr>
+<tr>
+<td>trajectory_point_fixer.stop_detection_velocity_threshold_mps</td>
+<td>float</td>
+<td>Velocity threshold used by the stop-detection logic: points whose speed falls below this value while decelerating are treated as stop candidates by both the cluster-based and velocity-profile-based detectors [m/s]</td>
+<td>0.3</td>
 <td>≥0</td>
 </tr>
 <tr>
