@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../docs/assets/images/autoware-foundation.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
     
     
       
@@ -23110,7 +23110,7 @@ Autoware installs it automatically in its setup script. If needed, the user can 
 <tr>
 <td><code>~/input/image*</code></td>
 <td><code>sensor_msgs::msg::Image</code></td>
-<td>Input image topics.</td>
+<td>Input image topics. The image is assumed to be RGB8 encoding.</td>
 </tr>
 <tr>
 <td><code>~/input/camera_info*</code></td>
@@ -23254,6 +23254,13 @@ Autoware installs it automatically in its setup script. If needed, the user can 
 <td>string</td>
 <td>A name of frame id where world coordinates system is defined with respect to.</td>
 <td>map</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>run_image_undistortion</td>
+<td>boolean</td>
+<td>A flag to run image undistortion.</td>
+<td>True</td>
 <td>N/A</td>
 </tr>
 <tr>
@@ -23505,12 +23512,12 @@ Autoware installs it automatically in its setup script. If needed, the user can 
 </table>
 <h3 id="the-build_only-option">The <code>build_only</code> option<a class="headerlink" href="#the-build_only-option" title="Permanent link">#</a></h3>
 <p>The <code>autoware_bevfusion</code> node has a <code>build_only</code> option to build the TensorRT engine file from the specified ONNX file, after which the program exits.</p>
-<div class="highlight"><pre><span></span><code>ros2<span class="w"> </span>launch<span class="w"> </span>autoware_bevfusion<span class="w"> </span>bevfusion.launch.xml<span class="w"> </span>build_only:<span class="o">=</span><span class="nb">true</span>
-</code></pre></div>
+<p><code>bash
+ros2 launch autoware_bevfusion bevfusion.launch.xml build_only:=true</code></p>
 <h3 id="the-log_level-option">The <code>log_level</code> option<a class="headerlink" href="#the-log_level-option" title="Permanent link">#</a></h3>
 <p>The default logging severity level for <code>autoware_bevfusion</code> is <code>info</code>. For debugging purposes, the developer may decrease severity level using <code>log_level</code> parameter:</p>
-<div class="highlight"><pre><span></span><code>ros2<span class="w"> </span>launch<span class="w"> </span>autoware_bevfusion<span class="w"> </span>bevfusion.launch.xml<span class="w"> </span>log_level:<span class="o">=</span>debug
-</code></pre></div>
+<p><code>bash
+ros2 launch autoware_bevfusion bevfusion.launch.xml log_level:=debug</code></p>
 <h2 id="assumptions-known-limits">Assumptions / Known limits<a class="headerlink" href="#assumptions-known-limits" title="Permanent link">#</a></h2>
 <p>This node assumes that the input pointcloud follows the <code>PointXYZIRC</code> layout defined in <code>autoware_point_types</code>.</p>
 <h2 id="trained-models">Trained Models<a class="headerlink" href="#trained-models" title="Permanent link">#</a></h2>
