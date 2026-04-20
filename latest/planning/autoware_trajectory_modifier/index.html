@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../docs/assets/images/autoware-foundation.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
     
     
       
@@ -22808,23 +22808,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Parameters">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#stop-point-fixer_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Stop Point Fixer
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -22864,6 +22847,7 @@
 <ul>
 <li>Plugin-based architecture for extensible trajectory modifications</li>
 <li>Stop point fixing to prevent trajectory issues near stationary conditions</li>
+<li>Obstacle detection and stopping to prevent collision</li>
 <li>Configurable parameters to adjust modification behavior</li>
 </ul>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">#</a></h2>
@@ -22872,8 +22856,8 @@
 <p>All modifier plugins must inherit from <code>TrajectoryModifierPluginBase</code> and implement:</p>
 <ul>
 <li><code>modify_trajectory()</code> - Main method to modify trajectory points</li>
-<li><code>set_up_params()</code> - Initialize plugin parameters</li>
-<li><code>on_parameter()</code> - Handle parameter updates</li>
+<li><code>on_initialize()</code> - Initialize plugin members and parameters</li>
+<li><code>update_params()</code> - Handle parameter updates</li>
 <li><code>is_trajectory_modification_required()</code> - Determine if modification is needed</li>
 </ul>
 <h3 id="current-plugins">Current Plugins<a class="headerlink" href="#current-plugins" title="Permanent link">#</a></h3>
@@ -22884,6 +22868,13 @@
 <li><strong>Long stop</strong>: the trajectory commands ego to remain stopped for longer than a minimum duration threshold</li>
 </ul>
 <p>Both conditions are individually enabled or disabled via parameters, allowing fine-grained control over when the override is applied.</p>
+<h4 id="obstacle-stop">Obstacle Stop<a class="headerlink" href="#obstacle-stop" title="Permanent link">#</a></h4>
+<p>The Obstacle Stop plugin serves as a deterministic safety shield operating independently of the generative model to:</p>
+<ul>
+<li><strong>Enforce Longitudinal Safety</strong>: Monitors the gap to dynamic and static obstacles to ensure a safe distance is maintained under all kinematic conditions.</li>
+<li><strong>Ensure Definitive Stopping</strong>: Guarantees zero-velocity set-points for stationary objects (e.g., traffic lights, stopped vehicles) to prevent "creeping" or oscillating behavior near obstacles.</li>
+<li><strong>Provide Predictable Deceleration</strong>: Standardizes the vehicle’s stopping profile to ensure consistent, comfortable, and physically guaranteed deceleration regardless of the AI's intended path.</li>
+</ul>
 <h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">#</a></h2>
 <p>This package depends on the following packages:</p>
 <ul>
@@ -22899,49 +22890,352 @@
 <li><strong>Output</strong>: Modified <code>autoware_internal_planning_msgs::msg::CandidateTrajectories</code> and selected <code>autoware_planning_msgs::msg::Trajectory</code></li>
 </ul>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
-<ul>
-<li><code>use_stop_point_fixer</code>: Enable the stop point fixer modifier plugin (default: <code>true</code>)</li>
-</ul>
-<h3 id="stop-point-fixer_1">Stop Point Fixer<a class="headerlink" href="#stop-point-fixer_1" title="Permanent link">#</a></h3>
 <table>
 <thead>
 <tr>
-<th>Parameter</th>
+<th>Name</th>
 <th>Type</th>
-<th>Default</th>
 <th>Description</th>
+<th>Default</th>
+<th>Range</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>stop_point_fixer.force_stop_close_stopped_trajectories</code></td>
-<td>bool</td>
-<td><code>true</code></td>
-<td>Force zero-velocity trajectory when the stop point is within <code>min_distance_threshold_m</code> of ego</td>
+<td>plugin_names</td>
+<td>array</td>
+<td>List of trajectory modifier plugins to load</td>
+<td>['autoware::trajectory_modifier::plugin::ObstacleStop', 'autoware::trajectory_modifier::plugin::StopPointFixer']</td>
+<td>N/A</td>
 </tr>
 <tr>
-<td><code>stop_point_fixer.force_stop_long_stopped_trajectories</code></td>
-<td>bool</td>
-<td><code>true</code></td>
-<td>Force zero-velocity trajectory when the trajectory commands a stop longer than <code>min_stop_duration_s</code></td>
+<td>use_stop_point_fixer</td>
+<td>boolean</td>
+<td>Enable the stop point fixer modifier plugin</td>
+<td>True</td>
+<td>N/A</td>
 </tr>
 <tr>
-<td><code>stop_point_fixer.velocity_threshold_mps</code></td>
-<td>double</td>
-<td><code>0.25</code></td>
-<td>Velocity threshold (m/s) below which ego is considered stationary</td>
+<td>use_obstacle_stop</td>
+<td>boolean</td>
+<td>Enable the obstacle stop modifier plugin</td>
+<td>True</td>
+<td>N/A</td>
 </tr>
 <tr>
-<td><code>stop_point_fixer.min_distance_threshold_m</code></td>
-<td>double</td>
-<td><code>1.0</code></td>
-<td>Distance threshold (m) for the close-stop condition</td>
+<td>trajectory_time_step</td>
+<td>float</td>
+<td>Time step for trajectory modification [s]</td>
+<td>0.1</td>
+<td>&gt;0.0</td>
 </tr>
 <tr>
-<td><code>stop_point_fixer.min_stop_duration_s</code></td>
-<td>double</td>
-<td><code>0.5</code></td>
-<td>Minimum stop duration (s) for the long-stop condition</td>
+<td>stop_point_fixer.force_stop_long_stopped_trajectories</td>
+<td>boolean</td>
+<td>Force zero velocity trajectory for trajectories with long stops</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>stop_point_fixer.force_stop_close_stopped_trajectories</td>
+<td>boolean</td>
+<td>Force zero velocity trajectory for trajectories with stops close to ego</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>stop_point_fixer.velocity_threshold</td>
+<td>float</td>
+<td>Velocity threshold below which ego vehicle is considered stationary</td>
+<td>0.25</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>stop_point_fixer.min_distance_threshold</td>
+<td>float</td>
+<td>Minimum distance threshold to trigger trajectory replacement</td>
+<td>1.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>stop_point_fixer.min_stop_duration</td>
+<td>float</td>
+<td>Minimum duration of stop to consider for trajectory replacement</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>obstacle_stop.use_objects</td>
+<td>boolean</td>
+<td>Enable the use of objects for obstacle stop</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>obstacle_stop.use_pointcloud</td>
+<td>boolean</td>
+<td>Enable the use of pointcloud for obstacle stop</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>obstacle_stop.enable_stop_for_objects</td>
+<td>boolean</td>
+<td>Enable stopping behavior when object is detected as obstacle</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>obstacle_stop.enable_stop_for_pointcloud</td>
+<td>boolean</td>
+<td>Enable stopping behavior when pointcloud is detected as obstacle</td>
+<td>False</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>obstacle_stop.stop_margin</td>
+<td>float</td>
+<td>Distance to maintain from an obstacle when stopped [m]</td>
+<td>6.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>obstacle_stop.nominal_stopping_decel</td>
+<td>float</td>
+<td>Nominal deceleration during stopping [m/s^2]</td>
+<td>1.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>obstacle_stop.maximum_stopping_decel</td>
+<td>float</td>
+<td>Maximum deceleration during stopping [m/s^2]</td>
+<td>4.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>obstacle_stop.stopping_jerk</td>
+<td>float</td>
+<td>Jerk during stopping [m/s^3]</td>
+<td>3.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>obstacle_stop.lateral_margin</td>
+<td>float</td>
+<td>Lateral margin on top of ego width from trajectory to consider for obstacle stop [m]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>obstacle_stop.arrived_distance_threshold</td>
+<td>float</td>
+<td>Threshold to check if the ego vehicle has arrived at the stop point [m]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>obstacle_tracking.on_time_buffer</td>
+<td>float</td>
+<td>Continuous detection duration to consider object/pointcloud to be persistent [s]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>obstacle_tracking.off_time_buffer</td>
+<td>float</td>
+<td>Continuous non-detection duration to consider object/pointcloud as not persistent [s]</td>
+<td>1.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>obstacle_tracking.object_distance_th</td>
+<td>float</td>
+<td>Distance threshold for object tracking [m]</td>
+<td>1.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>obstacle_tracking.object_yaw_th</td>
+<td>float</td>
+<td>Yaw threshold for object tracking [rad]</td>
+<td>0.1745</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>obstacle_tracking.pcd_distance_th</td>
+<td>float</td>
+<td>Distance threshold for pointcloud tracking [m]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>obstacle_tracking.grace_period</td>
+<td>float</td>
+<td>Grace period for object tracking [s]</td>
+<td>0.2</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>objects.object_types</td>
+<td>array</td>
+<td>Object types to consider for obstacle stop</td>
+<td>['car', 'truck', 'bus', 'trailer', 'motorcycle', 'bicycle', 'pedestrian', 'unknown']</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>objects.max_velocity_th</td>
+<td>float</td>
+<td>Maximum velocity threshold for target object [m/s]</td>
+<td>1.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>pointcloud.height_buffer</td>
+<td>float</td>
+<td>Height buffer to add above ego height [m]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>pointcloud.min_height</td>
+<td>float</td>
+<td>Minimum height of pointcloud [m]</td>
+<td>0.2</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>voxel_grid_filter.x</td>
+<td>float</td>
+<td>X dimension of voxel grid filter [m]</td>
+<td>0.2</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>voxel_grid_filter.y</td>
+<td>float</td>
+<td>Y dimension of voxel grid filter [m]</td>
+<td>0.2</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>voxel_grid_filter.z</td>
+<td>float</td>
+<td>Z dimension of voxel grid filter [m]</td>
+<td>0.2</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>voxel_grid_filter.min_size</td>
+<td>float</td>
+<td>Minimum size of voxel grid filter [m]</td>
+<td>3</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>clustering.tolerance</td>
+<td>float</td>
+<td>Tolerance for clustering [m]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>clustering.min_height</td>
+<td>float</td>
+<td>Minimum height for clustering [m]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>clustering.min_size</td>
+<td>float</td>
+<td>Minimum size for clustering [m]</td>
+<td>10</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>clustering.max_size</td>
+<td>float</td>
+<td>Maximum size for clustering [m]</td>
+<td>10000</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>rss_params.enable</td>
+<td>boolean</td>
+<td>Enable RSS safety check</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>object_decel.car</td>
+<td>float</td>
+<td>Deceleration for car type objects [m/s^2]</td>
+<td>1.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>object_decel.truck</td>
+<td>float</td>
+<td>Deceleration for truck type objects [m/s^2]</td>
+<td>1.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>object_decel.bus</td>
+<td>float</td>
+<td>Deceleration for bus type objects [m/s^2]</td>
+<td>1.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>object_decel.trailer</td>
+<td>float</td>
+<td>Deceleration for trailer type objects [m/s^2]</td>
+<td>1.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>object_decel.motorcycle</td>
+<td>float</td>
+<td>Deceleration for motorcycle type objects [m/s^2]</td>
+<td>3.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>object_decel.bicycle</td>
+<td>float</td>
+<td>Deceleration for bicycle type objects [m/s^2]</td>
+<td>5.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>object_decel.pedestrian</td>
+<td>float</td>
+<td>Deceleration for pedestrian type objects [m/s^2]</td>
+<td>5.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>rss_params.reaction_time</td>
+<td>float</td>
+<td>Reaction time to consider for RSS calculation [s]</td>
+<td>0.2</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>rss_params.safety_margin</td>
+<td>float</td>
+<td>Safety margin to consider for RSS calculation [m]</td>
+<td>2.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>rss_params.min_vel_th</td>
+<td>float</td>
+<td>Minimum velocity threshold for object to be considered for RSS safety check [m/s]</td>
+<td>0.5</td>
+<td>≥0.0</td>
 </tr>
 </tbody>
 </table>
