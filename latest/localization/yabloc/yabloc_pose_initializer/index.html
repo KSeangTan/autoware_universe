@@ -961,6 +961,8 @@
       
         
       
+        
+      
     
     
     
@@ -1145,6 +1147,34 @@
     
   
     autoware_point_types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../common/autoware_boundary_departure_checker" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Boundary Departure Checker
   
 
     
@@ -1466,10 +1496,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_3_14" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_3_15" >
         
           
-          <label class="md-nav__link" for="__nav_1_3_14" id="__nav_1_3_14_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_3_15" id="__nav_1_3_15_label" tabindex="0">
             
   
   
@@ -1487,8 +1517,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_3_14_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_3_14">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_3_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3_15">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -22842,10 +22872,10 @@
 It is also possible to download it manually. Even if the model is not downloaded, initialization will still complete, but the accuracy may be compromised.</p>
 <p>To download and extract the model manually:</p>
 <p><code>bash
-$ mkdir -p ~/autoware_data/yabloc_pose_initializer/
-$ wget -P ~/autoware_data/yabloc_pose_initializer/ \
+$ mkdir -p ~/autoware_data/ml_models/yabloc_pose_initializer/
+$ wget -P ~/autoware_data/ml_models/yabloc_pose_initializer/ \
        https://autoware-files.s3.us-west-2.amazonaws.com/models/yabloc/136_road-segmentation-adas-0001/resources.tar.gz
-$ tar xzf ~/autoware_data/yabloc_pose_initializer/resources.tar.gz -C ~/autoware_data/yabloc_pose_initializer/</code></p>
+$ tar xzf ~/autoware_data/ml_models/yabloc_pose_initializer/resources.tar.gz -C ~/autoware_data/ml_models/yabloc_pose_initializer/</code></p>
 <h2 id="note">Note<a class="headerlink" href="#note" title="Permanent link">#</a></h2>
 <p>This package makes use of external code. The trained files are provided by apollo. The trained files are automatically downloaded during env preparation.</p>
 <p>Original model URL</p>
