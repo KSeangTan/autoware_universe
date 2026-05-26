@@ -961,6 +961,8 @@
       
         
       
+        
+      
     
     
     
@@ -1145,6 +1147,34 @@
     
   
     autoware_point_types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/autoware_boundary_departure_checker" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Boundary Departure Checker
   
 
     
@@ -1466,10 +1496,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_3_14" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_3_15" >
         
           
-          <label class="md-nav__link" for="__nav_1_3_14" id="__nav_1_3_14_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1_3_15" id="__nav_1_3_15_label" tabindex="0">
             
   
   
@@ -1487,8 +1517,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_3_14_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_1_3_14">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_3_15_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3_15">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -23331,7 +23361,7 @@
 <p>The <code>autoware_lidar_centerpoint</code> node has <code>build_only</code> option to build the TensorRT engine file from the ONNX file.
 Although it is preferred to move all the ROS parameters in <code>.param.yaml</code> file in Autoware Universe, the <code>build_only</code> option is not moved to the <code>.param.yaml</code> file for now, because it may be used as a flag to execute the build as a pre-task. You can execute with the following command:</p>
 <p><code>bash
-ros2 launch autoware_lidar_centerpoint lidar_centerpoint.launch.xml model_name:=centerpoint_tiny model_path:=/home/autoware/autoware_data/lidar_centerpoint model_param_path:=$(ros2 pkg prefix autoware_lidar_centerpoint --share)/config/centerpoint_tiny.param.yaml build_only:=true</code></p>
+ros2 launch autoware_lidar_centerpoint lidar_centerpoint.launch.xml model_name:=centerpoint_tiny model_path:=/home/autoware/autoware_data/ml_models/lidar_centerpoint model_param_path:=$(ros2 pkg prefix autoware_lidar_centerpoint --share)/config/centerpoint_tiny.param.yaml build_only:=true</code></p>
 <h2 id="assumptions-known-limits">Assumptions / Known limits<a class="headerlink" href="#assumptions-known-limits" title="Permanent link">#</a></h2>
 <ul>
 <li>The <code>object.existence_probability</code> is stored the value of classification confidence of a DNN, not probability.</li>
