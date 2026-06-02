@@ -7,6 +7,11 @@
     <choice value="bevfusion_lidar"/>
     <choice value="bevfusion_camera_lidar"/>
   </arg>
+  <!-- Select the node plugin/executable based on the selected model_name -->
+  <let
+    name="plugin_name"
+    value="$(eval '&quot;autoware::bevfusion::BEVFusionLidarNode&quot; if &quot;$(var model_name)&quot; == &quot;bevfusion_lidar&quot; else &quot;autoware::bevfusion::BEVFusionCameraLidarNode&quot;')"
+  />
   <arg name="model_path" default="$(var data_path)/bevfusion"/>
   <arg name="model_param_path" default="$(find-pkg-share autoware_bevfusion)/config/$(var model_name).param.yaml"/>
   <arg name="ml_package_param_path" default="$(var model_path)/ml_package_$(var model_name).param.yaml"/>
@@ -36,7 +41,7 @@
   <group if="$(var use_pointcloud_container)">
     <load_composable_node target="$(var pointcloud_container_name)">
       <!-- Crash when using image_transport and topic name is longer than remapping topic, https://github.com/ros-perception/image_transport_plugins/issues/155 -->
-      <composable_node pkg="autoware_bevfusion" plugin="autoware::bevfusion::BEVFusionNode" name="bevfusion" namespace="/perception/detection">
+      <composable_node pkg="autoware_bevfusion" plugin="$(var plugin_name)" name="bevfusion" namespace="/perception/detection">
         <remap from="~/input/pointcloud" to="$(var input/pointcloud)"/>
         <remap from="~/input/pointcloud/cuda" to="$(var input/pointcloud)/cuda"/>
         <remap from="~/output/objects" to="$(var output/objects)"/>
@@ -65,7 +70,7 @@
   </group>
   <group unless="$(var use_pointcloud_container)">
     <!-- Crash when using image_transport and topic name is longer than remapping topic, https://github.com/ros-perception/image_transport_plugins/issues/155 -->
-    <node pkg="autoware_bevfusion" exec="autoware_bevfusion_node" name="bevfusion" output="screen" args="--ros-args --log-level $(var log_level)" namespace="/perception/detection">
+    <node pkg="autoware_bevfusion" exec="autoware_$(var model_name)_node" name="bevfusion" output="screen" args="--ros-args --log-level $(var log_level)" namespace="/perception/detection">
       <remap from="~/input/pointcloud" to="$(var input/pointcloud)"/>
       <remap from="~/input/pointcloud/cuda" to="$(var input/pointcloud)/cuda"/>
       <remap from="~/output/objects" to="$(var output/objects)"/>

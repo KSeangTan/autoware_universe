@@ -120,22 +120,25 @@ __global__ void generateBoxes3D_kernel(
   det_boxes3d[point_idx].vy = bbox_pred_output[9 * num_proposals + point_idx];
 }
 
-PostprocessCuda::PostprocessCuda(const BEVFusionConfig & config, cudaStream_t stream)
-: config_(config), stream_(stream)
+PostprocessCuda::PostprocessCuda(
+  const BEVFusionConfig & base_config, const BEVFusionLidarConfig & lidar_config,
+  cudaStream_t stream)
+: base_config_(base_config), lidar_config_(lidar_config), stream_(stream)
 {
   // Allocate memory for score thresholds on device using cuda::make_unique
   score_thresholds_d_ptr_ =
-    autoware::cuda_utils::make_unique<float[]>(config_.score_thresholds_.size());
+    autoware::cuda_utils::make_unique<float[]>(base_config_.score_thresholds_.size());
   distance_bin_upper_limits_d_ptr_ =
-    autoware::cuda_utils::make_unique<float[]>(config_.distance_bin_upper_limits_.size());
+    autoware::cuda_utils::make_unique<float[]>(base_config_.distance_bin_upper_limits_.size());
 
   // Move from host to device
   CHECK_CUDA_ERROR(cudaMemcpyAsync(
-    score_thresholds_d_ptr_.get(), config_.score_thresholds_.data(),
-    config_.score_thresholds_.size() * sizeof(float), cudaMemcpyHostToDevice, stream_));
+    score_thresholds_d_ptr_.get(), base_config_.score_thresholds_.data(),
+    base_config_.score_thresholds_.size() * sizeof(float), cudaMemcpyHostToDevice, stream_));
   CHECK_CUDA_ERROR(cudaMemcpyAsync(
-    distance_bin_upper_limits_d_ptr_.get(), config_.distance_bin_upper_limits_.data(),
-    config_.distance_bin_upper_limits_.size() * sizeof(float), cudaMemcpyHostToDevice, stream_));
+    distance_bin_upper_limits_d_ptr_.get(), base_config_.distance_bin_upper_limits_.data(),
+    base_config_.distance_bin_upper_limits_.size() * sizeof(float), cudaMemcpyHostToDevice,
+    stream_));
 }
 
 // cspell: ignore divup
@@ -143,19 +146,20 @@ cudaError_t PostprocessCuda::generateDetectedBoxes3D_launch(
   const std::int64_t * label_pred_output, const float * bbox_pred_output,
   const float * score_output, std::vector<Box3D> & det_boxes3d, cudaStream_t stream)
 {
-  dim3 threads = {config_.threads_per_block_};
-  dim3 blocks = {divup(config_.num_proposals_, threads.x)};
+  dim3 threads = {base_config_.threads_per_block_};
+  dim3 blocks = {divup(base_config_.num_proposals_, threads.x)};
 
-  auto boxes3d_d = thrust::device_vector<Box3D>(config_.num_proposals_);
+  auto boxes3d_d = thrust::device_vector<Box3D>(base_config_.num_proposals_);
   auto yaw_norm_thresholds_d = thrust::device_vector<float>(
-    config_.yaw_norm_thresholds_.begin(), config_.yaw_norm_thresholds_.end());
+    base_config_.yaw_norm_thresholds_.begin(), base_config_.yaw_norm_thresholds_.end());
 
   generateBoxes3D_kernel<<<blocks, threads, 0, stream>>>(
-    label_pred_output, bbox_pred_output, score_output, config_.voxel_x_size_, config_.voxel_y_size_,
-    config_.min_x_range_, config_.min_y_range_, config_.num_proposals_, config_.out_size_factor_,
-    thrust::raw_pointer_cast(yaw_norm_thresholds_d.data()), config_.num_classes_,
+    label_pred_output, bbox_pred_output, score_output, lidar_config_.voxel_x_size_,
+    lidar_config_.voxel_y_size_, lidar_config_.min_x_range_, lidar_config_.min_y_range_,
+    base_config_.num_proposals_, base_config_.out_size_factor_,
+    thrust::raw_pointer_cast(yaw_norm_thresholds_d.data()), base_config_.num_classes_,
     distance_bin_upper_limits_d_ptr_.get(), score_thresholds_d_ptr_.get(),
-    config_.distance_bin_upper_limits_.size(), thrust::raw_pointer_cast(boxes3d_d.data()));
+    base_config_.distance_bin_upper_limits_.size(), thrust::raw_pointer_cast(boxes3d_d.data()));
 
   // suppress by score
   const auto num_det_boxes3d =
@@ -176,7 +180,7 @@ cudaError_t PostprocessCuda::generateDetectedBoxes3D_launch(
   // supress by NMS
   thrust::device_vector<bool> final_keep_mask_d(num_det_boxes3d);
   const auto num_final_det_boxes3d =
-    circleNMS(det_boxes3d_d, config_.circle_nms_dist_threshold_, final_keep_mask_d, stream);
+    circleNMS(det_boxes3d_d, base_config_.circle_nms_dist_threshold_, final_keep_mask_d, stream);
   thrust::device_vector<Box3D> final_det_boxes3d_d(num_final_det_boxes3d);
   thrust::copy_if(
     thrust::device, det_boxes3d_d.begin(), det_boxes3d_d.end(), final_keep_mask_d.begin(),

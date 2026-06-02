@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,138 +15,17 @@
 #include "autoware/bevfusion/bevfusion_node.hpp"
 #include "autoware/bevfusion/utils.hpp"
 
-#include <image_transport/image_transport.hpp>
-
 #include <cstddef>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-// Contains implementations of functions other than constructor,destructor, topic callbacks for
-// BEVFusionNode Separated to reduce code complexity of bevfusion_node.cpp
+// Contains the shared helper implementations of the BEVFusionNode base class (parameter validation,
+// result/debug publishing and processing-time diagnostics). Separated to reduce the code complexity
+// of bevfusion_node.cpp.
 namespace autoware::bevfusion
 {
-
-void BEVFusionNode::validateParameters(
-  const std::vector<float> & point_cloud_range, const std::vector<float> & voxel_size)
-{
-  if (point_cloud_range.size() != 6) {
-    RCLCPP_ERROR(rclcpp::get_logger("bevfusion"), "The size of point_cloud_range != 6");
-    throw std::runtime_error("The size of point_cloud_range != 6");
-  }
-  if (voxel_size.size() != 3) {
-    RCLCPP_WARN_STREAM(rclcpp::get_logger("bevfusion"), "The size of voxel_size != 3");
-    throw std::runtime_error("The size of voxel_size != 3");
-  }
-}
-
-void BEVFusionNode::initializeSensorFusionSubscribers(
-  std::int64_t num_cameras, const ImagePreProcessingParams & image_pre_processing_params)
-{
-  if (!sensor_fusion_) {
-    return;
-  }
-
-  image_subs_.resize(num_cameras);
-  camera_info_subs_.resize(num_cameras);
-  lidar2camera_extrinsics_.resize(num_cameras);
-  camera_data_ptrs_.resize(num_cameras);
-  camera_matrices_ptrs_.resize(num_cameras);
-
-  auto resolve_topic_name = [this](const std::string & query) {
-    return this->get_node_topics_interface()->resolve_topic_name(query);
-  };
-  const std::string transport = use_compressed_images_ ? "compressed" : "raw";
-
-  for (std::int64_t camera_id = 0; camera_id < num_cameras; ++camera_id) {
-    // First construct CameraMatrices, CameraMatrices is shared by multiple CameraData for the same
-    // camera_id
-    camera_matrices_ptrs_[camera_id] = std::make_shared<CameraMatrices>();
-
-    // Then construct CameraData
-    camera_data_ptrs_[camera_id] = std::make_unique<CameraData>(
-      this, static_cast<int>(camera_id), image_pre_processing_params,
-      camera_matrices_ptrs_[camera_id]);
-
-    // Explicitly resolve the topic name using the node name and namespace, please check
-    // https://github.com/ros-perception/image_transport_plugins/issues/155
-    const std::string base_topic = resolve_topic_name("~/input/image" + std::to_string(camera_id));
-    image_subs_[camera_id] = image_transport::create_subscription(
-      this, base_topic,
-      std::bind(
-        &BEVFusionNode::imageCallback, this, std::placeholders::_1,
-        static_cast<std::size_t>(camera_id)),
-      transport, rmw_qos_profile_sensor_data);
-
-    camera_info_subs_[camera_id] = this->create_subscription<sensor_msgs::msg::CameraInfo>(
-      "~/input/camera_info" + std::to_string(camera_id), rclcpp::SensorDataQoS{}.keep_last(1),
-      [this, camera_id](const sensor_msgs::msg::CameraInfo & msg) {
-        this->cameraInfoCallback(msg, camera_id);
-      });
-  }
-}
-
-bool BEVFusionNode::areAllSensorDataAvailable() const
-{
-  return extrinsics_available_ && images_available_ && intrinsics_available_;
-}
-
-bool BEVFusionNode::checkSensorFusionReadiness()
-{
-  if (!sensor_fusion_) {
-    return true;
-  }
-
-  if (!areAllSensorDataAvailable()) {
-    RCLCPP_WARN_THROTTLE(
-      this->get_logger(), *this->get_clock(), 5000,
-      "Sensor fusion mode enabled but missing required data: extrinsics_available=%s, "
-      "images_available=%s, intrinsics_available=%s. Skipping detection",
-      extrinsics_available_ ? "true" : "false", images_available_ ? "true" : "false",
-      intrinsics_available_ ? "true" : "false");
-    return false;
-  }
-
-  return true;
-}
-
-void BEVFusionNode::precomputeIntrinsicsExtrinsics()
-{
-  if (!sensor_fusion_ || intrinsics_extrinsics_precomputed_) {
-    return;
-  }
-
-  std::vector<sensor_msgs::msg::CameraInfo> camera_info_msgs;
-  std::vector<Matrix4f> lidar2camera_extrinsics;
-
-  try {
-    std::transform(
-      camera_data_ptrs_.begin(), camera_data_ptrs_.end(), std::back_inserter(camera_info_msgs),
-      [](const auto & camera_data) { return camera_data->camera_info_value(); });
-  } catch (const std::runtime_error & e) {
-    RCLCPP_WARN_STREAM(
-      rclcpp::get_logger("bevfusion"), "Camera info is not available for some cameras!");
-    return;
-  }
-
-  std::transform(
-    lidar2camera_extrinsics_.begin(), lidar2camera_extrinsics_.end(),
-    std::back_inserter(lidar2camera_extrinsics), [](const auto & opt) { return *opt; });
-
-  detector_ptr_->setIntrinsicsExtrinsics(camera_info_msgs, lidar2camera_extrinsics);
-  intrinsics_extrinsics_precomputed_ = true;
-}
-
-void BEVFusionNode::computeCameraMasks(double lidar_stamp)
-{
-  camera_masks_.resize(camera_data_ptrs_.size());
-  for (std::size_t i = 0; i < camera_masks_.size(); ++i) {
-    auto camera_mask_timestamp = rclcpp::Time(camera_data_ptrs_[i]->image_msg()->header.stamp);
-    camera_masks_[i] =
-      (lidar_stamp - camera_mask_timestamp.seconds()) < max_camera_lidar_delay_ ? 1.0 : 0.f;
-  }
-}
 
 void BEVFusionNode::publishDetectionResults(
   const autoware_perception_msgs::msg::DetectedObjects & output_msg,

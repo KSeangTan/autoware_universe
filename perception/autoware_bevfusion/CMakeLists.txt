@@ -121,6 +121,9 @@ if(TRT_AVAIL AND CUDA_AVAIL AND SPCONV_AVAIL)
     lib/preprocess/precomputed_features.cpp
     lib/ros_utils.cpp
     lib/bevfusion_trt.cpp
+    lib/lidar/bevfusion_lidar_trt.cpp
+    lib/camera/bevfusion_camera_trt.cpp
+    lib/camera_lidar/bevfusion_camera_lidar_trt.cpp
     lib/camera/camera_matrices.cpp
     lib/camera/camera_data.cpp
   )
@@ -149,6 +152,9 @@ if(TRT_AVAIL AND CUDA_AVAIL AND SPCONV_AVAIL)
   ament_auto_add_library(${PROJECT_NAME}_component SHARED
     src/bevfusion_node.cpp
     src/bevfusion_node_utils.cpp
+    src/camera/bevfusion_camera_node.cpp
+    src/lidar/bevfusion_lidar_node.cpp
+    src/camera_lidar/bevfusion_camera_lidar_node.cpp
   )
 
   target_link_libraries(${PROJECT_NAME}_component
@@ -156,8 +162,18 @@ if(TRT_AVAIL AND CUDA_AVAIL AND SPCONV_AVAIL)
   )
 
   rclcpp_components_register_node(${PROJECT_NAME}_component
-    PLUGIN "autoware::bevfusion::BEVFusionNode"
-    EXECUTABLE ${PROJECT_NAME}_node
+    PLUGIN "autoware::bevfusion::BEVFusionLidarNode"
+    EXECUTABLE ${PROJECT_NAME}_lidar_node
+  )
+
+  rclcpp_components_register_node(${PROJECT_NAME}_component
+    PLUGIN "autoware::bevfusion::BEVFusionCameraNode"
+    EXECUTABLE ${PROJECT_NAME}_camera_node
+  )
+
+  rclcpp_components_register_node(${PROJECT_NAME}_component
+    PLUGIN "autoware::bevfusion::BEVFusionCameraLidarNode"
+    EXECUTABLE ${PROJECT_NAME}_camera_lidar_node
   )
 
   install(

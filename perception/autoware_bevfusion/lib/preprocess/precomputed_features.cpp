@@ -29,7 +29,7 @@
 namespace autoware::bevfusion
 {
 
-Tensor4D createFrustum(const BEVFusionConfig & config)
+Tensor4D createFrustum(const BEVFusionCameraConfig & config)
 {
   const float dbound_start = config.d_bound_[0];
   const float dbound_end = config.d_bound_[1];
@@ -195,7 +195,7 @@ std::tuple<
     Eigen::Matrix<std::int64_t, 1, Eigen::Dynamic, Eigen::RowMajor>   // indices
 > bevPoolAux(
     const Tensor5D& geom_feats_input,
-    const BEVFusionConfig & config)
+    const BEVFusionCameraConfig & config)
 {
   Eigen::Vector3f dx(config.x_bound_[2], config.y_bound_[2], config.z_bound_[2]);
   Eigen::Vector3f bx(
@@ -313,7 +313,7 @@ precomputeFeatures(
   const std::vector<Matrix4fRowM> & lidar2camera_transforms,
   const std::vector<Matrix4fRowM> & camera_aug_matrices,
   const std::vector<sensor_msgs::msg::CameraInfo> & camera_info_vector,
-  const BEVFusionConfig & config)
+  const BEVFusionCameraConfig & config)
 {
   Eigen::VectorXf lidar2images_flat(config.num_cameras_ * 4 * 4);
 

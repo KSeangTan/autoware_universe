@@ -16,6 +16,7 @@
 #define AUTOWARE__BEVFUSION__POSTPROCESS__POSTPROCESS_KERNEL_HPP_
 
 #include "autoware/bevfusion/bevfusion_config.hpp"
+#include "autoware/bevfusion/lidar/bevfusion_lidar_config.hpp"
 #include "autoware/bevfusion/utils.hpp"
 
 #include <autoware/cuda_utils/cuda_unique_ptr.hpp>
@@ -32,14 +33,17 @@ using autoware::cuda_utils::CudaUniquePtr;
 class PostprocessCuda
 {
 public:
-  explicit PostprocessCuda(const BEVFusionConfig & config, cudaStream_t stream);
+  explicit PostprocessCuda(
+    const BEVFusionConfig & base_config, const BEVFusionLidarConfig & lidar_config,
+    cudaStream_t stream);
 
   cudaError_t generateDetectedBoxes3D_launch(
     const std::int64_t * label_pred_output, const float * bbox_pred_output,
     const float * score_output, std::vector<Box3D> & det_boxes3d, cudaStream_t stream);
 
 private:
-  BEVFusionConfig config_;
+  BEVFusionConfig base_config_;
+  BEVFusionLidarConfig lidar_config_;
   cudaStream_t stream_;
 
   // For distance-based and class-based score thresholding

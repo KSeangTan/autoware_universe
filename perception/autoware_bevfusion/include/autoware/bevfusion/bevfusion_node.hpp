@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,24 +28,22 @@
 #include <autoware_utils_diagnostics/diagnostics_interface.hpp>
 #include <autoware_utils_system/stop_watch.hpp>
 #include <cuda_blackboard/cuda_adaptation.hpp>
-#include <cuda_blackboard/cuda_blackboard_subscriber.hpp>
 #include <cuda_blackboard/cuda_pointcloud2.hpp>
 #include <cuda_blackboard/negotiated_types.hpp>
 #include <diagnostic_updater/diagnostic_updater.hpp>
-#include <image_transport/image_transport.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 #include <autoware_perception_msgs/msg/detected_object_kinematics.hpp>
 #include <autoware_perception_msgs/msg/detected_objects.hpp>
 #include <autoware_perception_msgs/msg/object_classification.hpp>
 #include <autoware_perception_msgs/msg/shape.hpp>
-#include <sensor_msgs/msg/camera_info.hpp>
-#include <sensor_msgs/msg/compressed_image.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <optional>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -53,30 +51,41 @@
 namespace autoware::bevfusion
 {
 
+// Common base class for all BEVFusion nodes. It owns the detector, the output publisher and the
+// shared detection/diagnostics/debug logic, so that the lidar-only, camera and camera-lidar nodes
+// only have to compose the camera/lidar branches and provide their specific callbacks.
 class BEVFUSION_PUBLIC BEVFusionNode : public rclcpp::Node
 {
 public:
   using Matrix4f = Eigen::Matrix<float, 4, 4, Eigen::RowMajor>;
 
-  explicit BEVFusionNode(const rclcpp::NodeOptions & options);
+protected:
+  BEVFusionNode(const std::string & node_name, const rclcpp::NodeOptions & options);
 
-private:
-  void cloudCallback(const std::shared_ptr<const cuda_blackboard::CudaPointCloud2> & msg_ptr);
-  void imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr msg, std::size_t camera_id);
-  void cameraInfoCallback(const sensor_msgs::msg::CameraInfo & msg, std::size_t camera_id);
+  // Shared detection pipeline: run the detector, apply NMS, remap classes, publish results and
+  // debug info. The branches feed the (optional) camera data and masks.
+  void detectAndPublish(
+    const std::shared_ptr<const cuda_blackboard::CudaPointCloud2> & pc_msg_ptr,
+    const std::vector<std::unique_ptr<CameraData>> & camera_data_ptrs,
+    const std::vector<float> & camera_masks);
+
+  bool hasOutputSubscribers() const;
+
   void diagnoseProcessingTime(diagnostic_updater::DiagnosticStatusWrapper & stat);
 
-  // Helper methods for constructor
-  void initializeSensorFusionSubscribers(
-    std::int64_t num_cameras, const ImagePreProcessingParams & image_pre_processing_params);
-  void validateParameters(
-    const std::vector<float> & point_cloud_range, const std::vector<float> & voxel_size);
+  // Helper methods for the constructor
 
-  // Helper methods for cloudCallback
-  bool checkSensorFusionReadiness();
-  bool areAllSensorDataAvailable() const;
-  void precomputeIntrinsicsExtrinsics();
-  void computeCameraMasks(double lidar_stamp);
+  // Assemble the TensorRT configuration from the shared main-network engine settings declared in
+  // this base constructor. image_backbone_trt_config is only provided by the camera/camera-lidar
+  // fusion nodes.
+  TrtBEVFusionConfig makeTrtConfig(
+    const std::optional<tensorrt_common::TrtCommonConfig> & image_backbone_trt_config) const;
+
+  // Shut the node down once the TensorRT engine has been built, when the build_only parameter is
+  // set. Derived nodes call it right after they construct the detector.
+  void shutdownIfBuildOnly();
+
+  // Helper methods for the detection pipeline
   void publishDetectionResults(
     const autoware_perception_msgs::msg::DetectedObjects & output_msg,
     const std_msgs::msg::Header & header);
@@ -95,35 +104,23 @@ private:
     const rclcpp::Time & timestamp_now,
     diagnostic_msgs::msg::DiagnosticStatus::_level_type current_level);
 
-  std::unique_ptr<cuda_blackboard::CudaBlackboardSubscriber<cuda_blackboard::CudaPointCloud2>>
-    cloud_sub_;
-  std::vector<image_transport::Subscriber> image_subs_;
-  std::vector<rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::ConstSharedPtr> camera_info_subs_;
   rclcpp::Publisher<autoware_perception_msgs::msg::DetectedObjects>::SharedPtr objects_pub_{
     nullptr};
-  // unique_ptr to avoid copying the actual camera data in memory since there's gpu buffer in the
-  // camera data
-  std::vector<std::unique_ptr<CameraData>> camera_data_ptrs_;
-  // One CameraMatrices object can be shared by several CameraData
-  std::vector<std::shared_ptr<CameraMatrices>> camera_matrices_ptrs_;
 
   tf2_ros::Buffer tf_buffer_;
   tf2_ros::TransformListener tf_listener_{tf_buffer_};
 
   DetectionClassRemapper detection_class_remapper_;
   std::vector<std::string> class_names_;
-  std::optional<std::string> lidar_frame_;
-  float max_camera_lidar_delay_;
 
-  std::vector<float> camera_masks_;
-  std::vector<std::optional<Matrix4f>> lidar2camera_extrinsics_;
-
-  bool sensor_fusion_{false};
-  bool images_available_{false};
-  bool intrinsics_available_{false};
-  bool extrinsics_available_{false};
-  bool intrinsics_extrinsics_precomputed_{false};
-  bool use_compressed_images_{false};
+  // Shared configuration declared/parsed in the base constructor. The derived nodes combine these
+  // with their own (lidar/camera) configuration to build the detector.
+  std::optional<BEVFusionConfig> base_config_;
+  std::optional<DensificationParam> densification_param_;
+  std::string onnx_path_;
+  std::string engine_path_;
+  std::string trt_precision_;
+  bool build_only_{false};
 
   // for diagnostics
   double max_allowed_processing_time_ms_;

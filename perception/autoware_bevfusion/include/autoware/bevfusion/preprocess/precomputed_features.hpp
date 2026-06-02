@@ -15,7 +15,7 @@
 #ifndef AUTOWARE__BEVFUSION__PREPROCESS__PRECOMPUTED_FEATURES_HPP_
 #define AUTOWARE__BEVFUSION__PREPROCESS__PRECOMPUTED_FEATURES_HPP_
 
-#include "autoware/bevfusion/bevfusion_config.hpp"
+#include "autoware/bevfusion/camera/bevfusion_camera_config.hpp"
 
 #include <Eigen/Dense>
 #include <unsupported/Eigen/CXX11/Tensor>
@@ -51,7 +51,7 @@ using Matrix3fRowM = Eigen::Matrix<float, 3, 3, Eigen::RowMajor>;
 
 using Vector3fRowM = Eigen::Matrix<float, 1, 3, Eigen::RowMajor>;
 
-Tensor4D createFrustum(const BEVFusionConfig & config);
+Tensor4D createFrustum(const BEVFusionCameraConfig & config);
 
 Tensor5D getGeometry(
   const Tensor4D & frustum,             // [D, H, W, 3]
@@ -68,7 +68,7 @@ std::tuple<
   Eigen::Matrix<std::uint8_t, 1, Eigen::Dynamic, Eigen::RowMajor>,
   Eigen::Matrix<std::int64_t, 1, Eigen::Dynamic, Eigen::RowMajor>,
   Eigen::Matrix<std::int64_t, 1, Eigen::Dynamic, Eigen::RowMajor> >
-bevPoolAux(const Tensor5D & geom_feats_input, const BEVFusionConfig & config);
+bevPoolAux(const Tensor5D & geom_feats_input, const BEVFusionCameraConfig & config);
 
 std::tuple<
   Eigen::VectorXf,  // lidar2image
@@ -80,7 +80,7 @@ precomputeFeatures(
   const std::vector<Matrix4fRowM> & lidar2camera_transforms,
   const std::vector<Matrix4fRowM> & camera_aug_matrices,
   const std::vector<sensor_msgs::msg::CameraInfo> & camera_info_vector,
-  const BEVFusionConfig & config);
+  const BEVFusionCameraConfig & config);
 
 }  // namespace autoware::bevfusion
 

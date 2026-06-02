@@ -8,19 +8,3 @@
     out_size_factor: 8
     max_points_per_voxel: 10
     use_intensity: false
-
-    d_bound: [1.0, 166.2, 1.4]
-    x_bound: [-122.4, 122.4, 0.68]
-    y_bound: [-122.4, 122.4, 0.68]
-    z_bound: [-10.0, 10.0, 20.0]
-    num_cameras: 0
-    raw_image_height: 0
-    raw_image_width: 0
-    img_aug_scale_x: 0.0
-    img_aug_scale_y: 0.0
-    roi_height: 0
-    roi_width: 0
-    features_height: 0
-    features_width: 0
-    num_depth_features: 0
-    image_feature_channel: 0

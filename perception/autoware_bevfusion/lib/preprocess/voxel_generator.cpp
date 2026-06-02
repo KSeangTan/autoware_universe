@@ -27,13 +27,13 @@ namespace autoware::bevfusion
 {
 
 VoxelGenerator::VoxelGenerator(
-  const DensificationParam & densification_param, const BEVFusionConfig & config,
-  cudaStream_t stream)
-: config_(config), stream_(stream)
+  const DensificationParam & densification_param, const BEVFusionConfig & base_config,
+  const BEVFusionLidarConfig & lidar_config, cudaStream_t stream)
+: base_config_(base_config), lidar_config_(lidar_config), stream_(stream)
 {
   pd_ptr_ = std::make_unique<PointCloudDensification>(densification_param);
 
-  pre_ptr_ = std::make_unique<PreprocessCuda>(config_, stream_, false);
+  pre_ptr_ = std::make_unique<PreprocessCuda>(base_config_, lidar_config_, stream_, false);
 
   affine_past2current_d_ =
     autoware::cuda_utils::make_unique<float[]>(Eigen::Affine3f::MatrixType::SizeAtCompileTime);
@@ -55,9 +55,10 @@ std::size_t VoxelGenerator::generateSweepPoints(CudaUniquePtr<float[]> & points_
        pc_cache_iter++) {
     const auto & input_pointcloud_msg_ptr = pc_cache_iter->input_pointcloud_msg_ptr;
     auto sweep_num_points = input_pointcloud_msg_ptr->height * input_pointcloud_msg_ptr->width;
-    auto output_offset = point_counter * config_.num_point_feature_size_;
+    auto output_offset = point_counter * lidar_config_.num_point_feature_size_;
 
-    if (point_counter + sweep_num_points > static_cast<std::size_t>(config_.cloud_capacity_)) {
+    if (
+      point_counter + sweep_num_points > static_cast<std::size_t>(lidar_config_.cloud_capacity_)) {
       RCLCPP_WARN_STREAM(
         rclcpp::get_logger("bevfusion"), "Exceeding cloud capacity. Used "
                                            << pd_ptr_->getIdx(pc_cache_iter) << " out of "

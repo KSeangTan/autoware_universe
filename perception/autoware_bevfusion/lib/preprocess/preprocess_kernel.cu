@@ -43,13 +43,14 @@ namespace autoware::bevfusion
 {
 
 PreprocessCuda::PreprocessCuda(
-  const BEVFusionConfig & config, cudaStream_t stream, bool allocate_buffers)
-: stream_(stream), config_(config)
+  const BEVFusionConfig & base_config, const BEVFusionLidarConfig & lidar_config,
+  cudaStream_t stream, bool allocate_buffers)
+: stream_(stream), base_config_(base_config), lidar_config_(lidar_config)
 {
   if (allocate_buffers) {
-    hash_key_value_ = tv::empty({config.cloud_capacity_ * 2}, tv::custom128, 0);
-    point_indices_data_ = tv::empty({config.cloud_capacity_}, tv::int64, 0);
-    points_voxel_id_ = tv::empty({config.cloud_capacity_}, tv::int64, 0);
+    hash_key_value_ = tv::empty({lidar_config.cloud_capacity_ * 2}, tv::custom128, 0);
+    point_indices_data_ = tv::empty({lidar_config.cloud_capacity_}, tv::int64, 0);
+    points_voxel_id_ = tv::empty({lidar_config.cloud_capacity_}, tv::int64, 0);
   }
 }
 
@@ -91,16 +92,16 @@ cudaError_t PreprocessCuda::generateSweepPoints_launch(
   const InputPointType * input_data, std::size_t points_size, float time_lag,
   const float * transform_array, float * output_points)
 {
-  dim3 blocks(divup(points_size, config_.threads_per_block_));
-  dim3 threads(config_.threads_per_block_);
+  dim3 blocks(divup(points_size, base_config_.threads_per_block_));
+  dim3 threads(base_config_.threads_per_block_);
 
-  if (config_.use_intensity_)
+  if (lidar_config_.use_intensity_)
     generateSweepPoints_kernel<true><<<blocks, threads, 0, stream_>>>(
-      input_data, points_size, time_lag, transform_array, config_.num_point_feature_size_,
+      input_data, points_size, time_lag, transform_array, lidar_config_.num_point_feature_size_,
       output_points);
   else
     generateSweepPoints_kernel<false><<<blocks, threads, 0, stream_>>>(
-      input_data, points_size, time_lag, transform_array, config_.num_point_feature_size_,
+      input_data, points_size, time_lag, transform_array, lidar_config_.num_point_feature_size_,
       output_points);
 
   cudaError_t err = cudaGetLastError();
@@ -114,34 +115,34 @@ std::size_t PreprocessCuda::generateVoxels(
   using Point2VoxelGPU3D = spconvlib::spconv::csrc::sparse::all::ops3d::Point2Voxel;
 
   std::array<float, 3> vsize_xyz{
-    config_.voxel_z_size_, config_.voxel_y_size_, config_.voxel_x_size_};
+    lidar_config_.voxel_z_size_, lidar_config_.voxel_y_size_, lidar_config_.voxel_x_size_};
 
   std::array<std::int32_t, 3> grid_size{
-    static_cast<std::int32_t>(config_.grid_z_size_),
-    static_cast<std::int32_t>(config_.grid_y_size_),
-    static_cast<std::int32_t>(config_.grid_x_size_)};
+    static_cast<std::int32_t>(lidar_config_.grid_z_size_),
+    static_cast<std::int32_t>(lidar_config_.grid_y_size_),
+    static_cast<std::int32_t>(lidar_config_.grid_x_size_)};
 
   std::array<std::int64_t, 3> grid_stride{
-    static_cast<std::int64_t>(config_.grid_y_size_ * config_.grid_x_size_),
-    static_cast<std::int64_t>(config_.grid_x_size_), 1};
+    static_cast<std::int64_t>(lidar_config_.grid_y_size_ * lidar_config_.grid_x_size_),
+    static_cast<std::int64_t>(lidar_config_.grid_x_size_), 1};
 
-  std::array<float, 6> coors_range{config_.min_z_range_, config_.min_y_range_,
-                                   config_.min_x_range_, config_.max_z_range_,
-                                   config_.max_y_range_, config_.max_x_range_};
+  std::array<float, 6> coors_range{lidar_config_.min_z_range_, lidar_config_.min_y_range_,
+                                   lidar_config_.min_x_range_, lidar_config_.max_z_range_,
+                                   lidar_config_.max_y_range_, lidar_config_.max_x_range_};
 
   tv::Tensor pc = tv::from_blob(
-    points, {static_cast<std::int64_t>(points_size), config_.num_point_feature_size_}, tv::float32,
-    0);
+    points, {static_cast<std::int64_t>(points_size), lidar_config_.num_point_feature_size_},
+    tv::float32, 0);
 
   tv::Tensor voxels_padded = tv::from_blob(
-    voxel_features, {config_.max_num_voxels_, config_.max_points_per_voxel_, pc.dim(1)},
+    voxel_features, {lidar_config_.max_num_voxels_, lidar_config_.max_points_per_voxel_, pc.dim(1)},
     tv::float32, 0);
 
   tv::Tensor indices_padded_no_batch =
-    tv::from_blob(voxel_coords, {config_.max_num_voxels_, 3}, tv::int32, 0);
+    tv::from_blob(voxel_coords, {lidar_config_.max_num_voxels_, 3}, tv::int32, 0);
 
   tv::Tensor num_points_per_voxel_tensor =
-    tv::from_blob(num_points_per_voxel, {config_.max_num_voxels_}, tv::int32, 0);
+    tv::from_blob(num_points_per_voxel, {lidar_config_.max_num_voxels_}, tv::int32, 0);
 
   auto p2v_res = Point2VoxelGPU3D::point_to_voxel_hash_static(
     pc, voxels_padded, indices_padded_no_batch, num_points_per_voxel_tensor, hash_key_value_,

@@ -16,6 +16,7 @@
 #define AUTOWARE__BEVFUSION__PREPROCESS__VOXEL_GENERATOR_HPP_
 
 #include "autoware/bevfusion/bevfusion_config.hpp"
+#include "autoware/bevfusion/lidar/bevfusion_lidar_config.hpp"
 #include "autoware/bevfusion/preprocess/pointcloud_densification.hpp"
 #include "autoware/bevfusion/preprocess/preprocess_kernel.hpp"
 
@@ -41,8 +42,8 @@ class VoxelGenerator
 {
 public:
   explicit VoxelGenerator(
-    const DensificationParam & densification_param, const BEVFusionConfig & config,
-    cudaStream_t stream);
+    const DensificationParam & densification_param, const BEVFusionConfig & base_config,
+    const BEVFusionLidarConfig & lidar_config, cudaStream_t stream);
   std::size_t generateSweepPoints(CudaUniquePtr<float[]> & points_d);
   bool enqueuePointCloud(
     const std::shared_ptr<const cuda_blackboard::CudaPointCloud2> & msg_ptr,
@@ -51,7 +52,8 @@ public:
 private:
   std::unique_ptr<PointCloudDensification> pd_ptr_{nullptr};
   std::unique_ptr<PreprocessCuda> pre_ptr_{nullptr};
-  BEVFusionConfig config_;
+  BEVFusionConfig base_config_;
+  BEVFusionLidarConfig lidar_config_;
   CudaUniquePtr<float[]> affine_past2current_d_{nullptr};
   std::vector<float> points_;
   cudaStream_t stream_;

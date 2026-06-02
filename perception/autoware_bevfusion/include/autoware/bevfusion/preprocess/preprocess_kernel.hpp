@@ -32,6 +32,7 @@
 #define AUTOWARE__BEVFUSION__PREPROCESS__PREPROCESS_KERNEL_HPP_
 
 #include "autoware/bevfusion/bevfusion_config.hpp"
+#include "autoware/bevfusion/lidar/bevfusion_lidar_config.hpp"
 #include "autoware/bevfusion/preprocess/point_type.hpp"
 #include "autoware/bevfusion/utils.hpp"
 
@@ -49,7 +50,9 @@ namespace autoware::bevfusion
 class PreprocessCuda
 {
 public:
-  PreprocessCuda(const BEVFusionConfig & config, cudaStream_t stream, bool allocate_buffers);
+  PreprocessCuda(
+    const BEVFusionConfig & base_config, const BEVFusionLidarConfig & lidar_config,
+    cudaStream_t stream, bool allocate_buffers);
 
   cudaError_t generateSweepPoints_launch(
     const InputPointType * input_data, std::size_t points_size, float time_lag,
@@ -60,7 +63,8 @@ public:
     std::int32_t * voxel_coords, std::int32_t * num_points_per_voxel);
 
 private:
-  BEVFusionConfig config_;
+  BEVFusionConfig base_config_;
+  BEVFusionLidarConfig lidar_config_;
   cudaStream_t stream_;
 
   tv::Tensor hash_key_value_;
