@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://autowarefoundation.github.io/autoware_universe/latest/planning/autoware_trajectory_optimizer/">
+        <link rel="canonical" href="https://autowarefoundation.github.io/autoware_universe/latest/planning/autoware_minimum_rule_based_planner/">
       
       
-        <link rel="prev" href="../autoware_trajectory_modifier/">
+        <link rel="prev" href="../autoware_manual_lane_change_handler/">
       
       
-        <link rel="next" href="docs/continuous_jerk_filter/">
+        <link rel="next" href="../autoware_mission_planner_universe/">
       
       
         
       
       
       <link rel="icon" href="../../docs/assets/images/autoware-foundation.png">
-      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
-        <title>Autoware Trajectory Optimizer - Autoware Universe Documentation</title>
+        <title>autoware_minimum_rule_based_planner - Autoware Universe Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#autoware-trajectory-optimizer" class="md-skip">
+        <a href="#autoware_minimum_rule_based_planner" class="md-skip">
           Skip to content
         </a>
       
@@ -120,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Autoware Trajectory Optimizer
+              autoware_minimum_rule_based_planner
             
           </span>
         </div>
@@ -14711,7 +14711,7 @@
   
   
     <li class="md-nav__item">
-      <a href="docs/kinematic_feasibility_enforcer" class="md-nav__link">
+      <a href="../autoware_trajectory_optimizer/docs/kinematic_feasibility_enforcer" class="md-nav__link">
         
   
   
@@ -14739,7 +14739,7 @@
   
   
     <li class="md-nav__item">
-      <a href="docs/qp_smoother" class="md-nav__link">
+      <a href="../autoware_trajectory_optimizer/docs/qp_smoother" class="md-nav__link">
         
   
   
@@ -14851,7 +14851,7 @@
   
   
     <li class="md-nav__item">
-      <a href="." class="md-nav__link">
+      <a href="../autoware_trajectory_optimizer" class="md-nav__link">
         
   
   
@@ -14935,7 +14935,7 @@
   
   
     <li class="md-nav__item">
-      <a href="docs/continuous_jerk_filter" class="md-nav__link">
+      <a href="../autoware_trajectory_optimizer/docs/continuous_jerk_filter" class="md-nav__link">
         
   
   
@@ -22771,6 +22771,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#features" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -22782,22 +22793,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture" class="md-nav__link">
+  <a href="#inputs-outputs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture
+        Inputs / Outputs
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Architecture">
+    <nav class="md-nav" aria-label="Inputs / Outputs">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#plugin-loading-and-execution" class="md-nav__link">
+  <a href="#inputs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Plugin Loading and Execution
+        Inputs
       
     </span>
   </a>
@@ -22805,21 +22816,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#available-plugins" class="md-nav__link">
+  <a href="#outputs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Available Plugins
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#important-plugin-ordering-constraints" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ⚠️ Important: Plugin Ordering Constraints
+        Outputs
       
     </span>
   </a>
@@ -22828,39 +22828,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#design-specification" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Design Specification
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#qp-smoother" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        QP Smoother
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dependencies" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Dependencies
-      
-    </span>
-  </a>
   
 </li>
       
@@ -22872,34 +22839,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Parameters">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameter-types" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameter Types
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#configuring-plugin-order" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuring Plugin Order
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -22923,91 +22862,109 @@
   
 
 
-<div><h1 id="autoware-trajectory-optimizer">Autoware Trajectory Optimizer<a class="headerlink" href="#autoware-trajectory-optimizer" title="Permanent link">#</a></h1>
-<p>The <code>autoware_trajectory_optimizer</code> package generates smooth and feasible trajectories for autonomous vehicles using a plugin-based optimization pipeline. It takes candidate trajectories as input and applies a sequence of optimization plugins to produce smooth, drivable trajectories with proper velocity and acceleration profiles.</p>
+<div><h1 id="autoware_minimum_rule_based_planner">autoware_minimum_rule_based_planner<a class="headerlink" href="#autoware_minimum_rule_based_planner" title="Permanent link">#</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">#</a></h2>
+<p>A minimum rule-based trajectory planner that generates safe and feasible trajectories for autonomous driving. It follows the planned route by constructing trajectories from lanelet centerline and applies multi-stage optimization for geometric smoothness, velocity profiles, and obstacle avoidance.</p>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">#</a></h2>
 <ul>
-<li><strong>Plugin-based architecture</strong> - Modular optimization pipeline where each step is a separate plugin</li>
-<li><strong>Multiple smoothing methods</strong>:<ul>
-<li>Elastic Band (EB) smoother for path optimization</li>
-<li>Akima spline interpolation for smooth path interpolation</li>
-<li>QP-based smoother with quadratic programming for path smoothing with jerk constraints</li>
+<li><strong>Centerline-based path planning</strong>: Generates paths along lanelet centerline from the HD map, extending backward and forward from the ego vehicle's position</li>
+<li><strong>Smooth goal connection</strong>: Refines the path near the goal pose for smooth stopping</li>
+<li><strong>Path shifting</strong>: Shifts the centerline path to start from the ego vehicle's current pose, using curvature-aware shift distance calculation based on ego velocity and lateral acceleration limits</li>
+<li><strong>Trajectory smoothing</strong>: Applies an Elastic Band smoother for geometric smoothing via a plugin interface</li>
+<li><strong>Trajectory modification</strong>: Applies modifier plugins (e.g., obstacle stop) for safety modifications</li>
+<li><strong>Velocity optimization</strong>: Computes a jerk-filtered velocity profile respecting constraints on acceleration, jerk, and lateral acceleration</li>
+<li><strong>Test mode</strong>: Supports bypassing path planning by directly receiving a <code>PathWithLaneId</code> topic</li>
 </ul>
-</li>
-<li><strong>Velocity optimization</strong> - Jerk-filtered velocity smoothing from <code>autoware_velocity_smoother</code></li>
-<li><strong>Temporal MPT optimization</strong> - acados MPC (8 s / 0.1 s horizon) on a kinematic bicycle with x, y, yaw, and speed states</li>
-<li><strong>Trajectory validation</strong> - Removes invalid points and fixes trajectory orientation</li>
-<li><strong>Backward trajectory extension</strong> - Extends trajectory using past ego states</li>
-<li><strong>Dynamic parameter reconfiguration</strong> - Runtime parameter updates supported</li>
-</ul>
-<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">#</a></h2>
-<p>The package uses a pluginlib-based architecture where optimization plugins are dynamically loaded at startup. Each plugin inherits from <code>TrajectoryOptimizerPluginBase</code> and is loaded via the ROS 2 pluginlib system.</p>
-<h3 id="plugin-loading-and-execution">Plugin Loading and Execution<a class="headerlink" href="#plugin-loading-and-execution" title="Permanent link">#</a></h3>
-<p>Plugins are loaded based on the <code>plugin_names</code> parameter, which defines both which plugins to load and their execution order:</p>
-<p><code>yaml
-plugin_names:
-  - "autoware::trajectory_optimizer::plugin::TrajectoryPointFixer"
-  - "autoware::trajectory_optimizer::plugin::TrajectoryQPSmoother"
-  - "autoware::trajectory_optimizer::plugin::TrajectoryEBSmootherOptimizer"
-  - "autoware::trajectory_optimizer::plugin::TrajectorySplineSmoother"
-  - "autoware::trajectory_optimizer::plugin::TrajectoryVelocityOptimizer"
-  - "autoware::trajectory_optimizer::plugin::TrajectoryExtender"
-  - "autoware::trajectory_optimizer::plugin::TrajectoryPointFixer"</code></p>
-<h3 id="available-plugins">Available Plugins<a class="headerlink" href="#available-plugins" title="Permanent link">#</a></h3>
-<ol>
-<li><strong>TrajectoryPointFixer</strong> - Removes invalid/repeated points and fixes trajectory direction</li>
-<li><strong>TrajectoryQPSmoother</strong> - QP-based path smoothing with jerk constraints</li>
-<li><strong>TrajectoryEBSmootherOptimizer</strong> - Elastic Band path smoothing</li>
-<li><strong>TrajectorySplineSmoother</strong> - Akima spline interpolation</li>
-<li><strong>TrajectoryMPTOptimizer</strong> - Model predictive trajectory optimization with adaptive corridor bounds. Uses bicycle kinematics model for trajectory refinement. Disabled by default (experimental). See <a href="docs/mpt_optimizer/">docs/mpt_optimizer.md</a> for details.</li>
-<li><strong>TrajectoryTemporalMPTOptimizer</strong> - Temporal acados MPC path tracking on a time-ordered reference (8.0 s horizon, 0.1 s discretization). Must be listed in <code>plugin_names</code> and enabled via <code>use_temporal_mpt_optimizer</code>. See <a href="docs/temporal_mpt_optimizer/">docs/temporal_mpt_optimizer.md</a> for details.</li>
-<li><strong>TrajectoryVelocityOptimizer</strong> - Velocity profile optimization with lateral acceleration limits</li>
-<li><strong>TrajectoryExtender</strong> - Extends trajectory backward using past ego states</li>
-<li><strong>TrajectoryKinematicFeasibilityEnforcer</strong> - Enforces Ackermann steering and yaw rate constraints</li>
-</ol>
-<p>Each plugin can be enabled/disabled at runtime via activation flags (e.g., <code>use_qp_smoother</code>) and manages its own configuration independently.</p>
-<h3 id="important-plugin-ordering-constraints">⚠️ Important: Plugin Ordering Constraints<a class="headerlink" href="#important-plugin-ordering-constraints" title="Permanent link">#</a></h3>
-<p><strong>The order of plugin execution is critical and must be carefully maintained:</strong></p>
-<ul>
-<li><strong>QP Smoother must run before EB/Akima smoothers</strong>: The QP solver relies on constant time intervals (Δt) between trajectory points (default: 0.1s). Both Elastic Band and Akima spline smoothers resample trajectories without preserving the time domain structure, which breaks the QP solver's assumptions. Therefore, when using multiple smoothers together, the QP smoother must execute first.</li>
-</ul>
-<ul>
-<li><strong>Trajectory Extender positioning</strong>: The trajectory extender has known discontinuity issues when placed early in the pipeline. It negatively affects the QP solver results and introduces artifacts. For this reason, it has been moved to near the end of the pipeline and is <strong>disabled by default</strong> (<code>use_trajectory_extender: false</code>). Fixing the extender's discontinuity issues is future work.</li>
-</ul>
-<ul>
-<li><strong>Temporal MPT vs spatial MPT</strong>: <code>TrajectoryTemporalMPTOptimizer</code> is independent of <code>TrajectoryMPTOptimizer</code> (different solver, no corridor bounds). It can replace the entire post-<code>TrajectoryPointFixer</code> plugin chain (kinematic enforcer, QP/EB/spline smoothers, velocity optimizer, spatial MPT) with a single MPC step; see <a href="docs/temporal_mpt_optimizer/">docs/temporal_mpt_optimizer.md</a>. It overwrites at most the first 81 points (8.0 s at 0.1 s spacing).</li>
-</ul>
-<h2 id="design-specification">Design Specification<a class="headerlink" href="#design-specification" title="Permanent link">#</a></h2>
-<p>For a detailed description of the optimizer's core assumptions, the constant-dt contract,
-how velocity and acceleration are derived from positions, plugin pipeline specification, and
-known limitations, see <a href="docs/trajectory_optimizer_specification/">docs/trajectory_optimizer_specification.md</a>.</p>
-<h2 id="qp-smoother">QP Smoother<a class="headerlink" href="#qp-smoother" title="Permanent link">#</a></h2>
-<p>The QP smoother uses quadratic programming (OSQP solver) to optimize trajectory paths with advanced features:</p>
-<ul>
-<li><strong>Objective</strong>: Minimizes path curvature while maintaining fidelity to the original trajectory</li>
-<li><strong>Decision variables</strong>: Path positions (x, y) for each trajectory point</li>
-<li><strong>Constraints</strong>: Fixed initial position (optionally fixed last position)</li>
-<li><strong>Velocity-based fidelity</strong>: Automatically reduces fidelity weight at low speeds for aggressive smoothing of noise</li>
-<li><strong>Post-processing</strong>: Recalculates velocities, accelerations, and orientations from smoothed positions</li>
-</ul>
-<p><strong>For detailed documentation</strong>, see <a href="docs/qp_smoother/">docs/qp_smoother.md</a> which covers:</p>
-<ul>
-<li>Mathematical formulation</li>
-<li>Velocity-based fidelity weighting (sigmoid function)</li>
-<li>Parameter tuning guidelines</li>
-<li>Usage examples</li>
-<li>Performance characteristics</li>
-</ul>
-<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">#</a></h2>
-<ul>
-<li><a href="https://github.com/acados/acados">acados</a> - Required to build the temporal MPT solver (<code>acados_interface_temporal</code>)</li>
-<li><code>autoware_motion_utils</code> - Trajectory manipulation utilities</li>
-<li><code>autoware_osqp_interface</code> - QP solver interface for QP smoother</li>
-<li><code>autoware_path_smoother</code> - Elastic Band smoother</li>
-<li><code>autoware_velocity_smoother</code> - Velocity smoothing algorithms</li>
-<li><code>autoware_utils</code> - Common utilities (geometry, ROS helpers)</li>
-<li><code>autoware_vehicle_info_utils</code> - Vehicle information</li>
-</ul>
+<h2 id="inputs-outputs">Inputs / Outputs<a class="headerlink" href="#inputs-outputs" title="Permanent link">#</a></h2>
+<h3 id="inputs">Inputs<a class="headerlink" href="#inputs" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>~/input/route</code></td>
+<td><code>LaneletRoute</code></td>
+<td>Planned route</td>
+</tr>
+<tr>
+<td><code>~/input/vector_map</code></td>
+<td><code>LaneletMapBin</code></td>
+<td>HD map</td>
+</tr>
+<tr>
+<td><code>~/input/odometry</code></td>
+<td><code>Odometry</code></td>
+<td>Ego pose and velocity</td>
+</tr>
+<tr>
+<td><code>~/input/acceleration</code></td>
+<td><code>AccelWithCovarianceStamped</code></td>
+<td>Ego acceleration</td>
+</tr>
+<tr>
+<td><code>~/input/objects</code></td>
+<td><code>PredictedObjects</code></td>
+<td>Surrounding obstacles</td>
+</tr>
+<tr>
+<td><code>~/input/test/path_with_lane_id</code></td>
+<td><code>PathWithLaneId</code></td>
+<td>Test mode: bypasses path planning</td>
+</tr>
+</tbody>
+</table>
+<h3 id="outputs">Outputs<a class="headerlink" href="#outputs" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>~/output/candidate_trajectories</code></td>
+<td><code>CandidateTrajectories</code></td>
+<td>Planned trajectory</td>
+</tr>
+<tr>
+<td><code>~/debug/path_with_lane_id</code></td>
+<td><code>PathWithLaneId</code></td>
+<td>Debug: planned path</td>
+</tr>
+<tr>
+<td><code>~/debug/trajectory</code></td>
+<td><code>Trajectory</code></td>
+<td>Debug: final output trajectory</td>
+</tr>
+<tr>
+<td><code>~/debug/shifted_trajectory</code></td>
+<td><code>Trajectory</code></td>
+<td>Debug: trajectory after path shifting</td>
+</tr>
+<tr>
+<td><code>~/debug/optimizer/{name}/trajectory</code></td>
+<td><code>Trajectory</code></td>
+<td>Debug: trajectory after each optimizer plugin</td>
+</tr>
+<tr>
+<td><code>~/debug/modifier/{name}/trajectory</code></td>
+<td><code>Trajectory</code></td>
+<td>Debug: trajectory after each modifier plugin</td>
+</tr>
+<tr>
+<td><code>~/debug/processing_time_detail_ms</code></td>
+<td><code>ProcessingTimeDetail</code></td>
+<td>Debug: processing time breakdown</td>
+</tr>
+</tbody>
+</table>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">#</a></h2>
 <table>
 <thead>
@@ -23021,510 +22978,857 @@ known limitations, see <a href="docs/trajectory_optimizer_specification/">docs/t
 </thead>
 <tbody>
 <tr>
+<td>planning_frequency_hz</td>
+<td>float</td>
+<td>Planning loop frequency [Hz]</td>
+<td>10.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
 <td>plugin_names</td>
 <td>array</td>
-<td>List of plugin class names to load in execution order. Plugins will be loaded dynamically at startup and executed in the order specified.</td>
-<td>['autoware::trajectory_optimizer::plugin::TrajectoryPointFixer', 'autoware::trajectory_optimizer::plugin::TrajectoryKinematicFeasibilityEnforcer', 'autoware::trajectory_optimizer::plugin::TrajectoryQPSmoother', 'autoware::trajectory_optimizer::plugin::TrajectoryEBSmootherOptimizer', 'autoware::trajectory_optimizer::plugin::TrajectorySplineSmoother', 'autoware::trajectory_optimizer::plugin::TrajectoryVelocityOptimizer', 'autoware::trajectory_optimizer::plugin::TrajectoryExtender', 'autoware::trajectory_optimizer::plugin::TrajectoryPointFixer']</td>
+<td>List of plugins to load</td>
+<td>['autoware::minimum_rule_based_planner::plugin::ObstacleStop', 'autoware::minimum_rule_based_planner::plugin::SurroundObstacleStop']</td>
 <td>N/A</td>
 </tr>
 <tr>
-<td>use_akima_spline_interpolation</td>
-<td>boolean</td>
-<td>Enable Akima spline interpolation for trajectory smoothing</td>
-<td>False</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>use_eb_smoother</td>
-<td>boolean</td>
-<td>Enable Elastic Band smoother for trajectory smoothing</td>
-<td>False</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>use_qp_smoother</td>
-<td>boolean</td>
-<td>Enable QP-based trajectory smoothing with explicit jerk constraints</td>
-<td>True</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>use_trajectory_point_fixer</td>
-<td>boolean</td>
-<td>Remove repeated or invalid points, or points that go against the general trajectory direction</td>
-<td>True</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>use_trajectory_extender</td>
-<td>boolean</td>
-<td>Enable trajectory extender to extend trajectory backward using ego pose history</td>
-<td>False</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>use_velocity_optimizer</td>
-<td>boolean</td>
-<td>Enable velocity profile optimization with jerk filtering and constraint enforcement</td>
-<td>True</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>use_kinematic_feasibility_enforcer</td>
-<td>boolean</td>
-<td>Enable kinematic feasibility enforcer plugin (Ackermann + yaw rate constraints)</td>
-<td>False</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>use_mpt_optimizer</td>
-<td>boolean</td>
-<td>Enable MPT (Model Predictive Trajectory) optimizer plugin for geometry refinement with adaptive bounds</td>
-<td>False</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>trajectory_point_fixer.resample_close_points</td>
-<td>boolean</td>
-<td>Enable resampling of close proximity points</td>
-<td>True</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>trajectory_point_fixer.min_dist_to_remove_m</td>
+<td>path_length.backward</td>
 <td>float</td>
-<td>Minimum distance threshold for removing close proximity points [m]</td>
-<td>0.01</td>
-<td>≥0</td>
+<td>Path length behind ego [m]</td>
+<td>5.0</td>
+<td>≥0.0</td>
 </tr>
 <tr>
-<td>trajectory_point_fixer.min_dist_to_resample_m</td>
+<td>path_length.forward</td>
 <td>float</td>
-<td>Minimum distance threshold for merging close proximity points [m]</td>
-<td>0.05</td>
-<td>≥0</td>
+<td>Path length ahead of ego [m]</td>
+<td>300.0</td>
+<td>≥0.0</td>
 </tr>
 <tr>
-<td>trajectory_point_fixer.stop_detection_velocity_threshold_mps</td>
+<td>smooth_goal_connection.search_radius_range</td>
 <td>float</td>
-<td>Velocity threshold used by the stop-detection logic: points whose speed falls below this value while decelerating are treated as stop candidates by both the cluster-based and velocity-profile-based detectors [m/s]</td>
-<td>0.3</td>
-<td>≥0</td>
+<td>Search radius for goal connection [m]</td>
+<td>7.5</td>
+<td>≥0.0</td>
 </tr>
 <tr>
-<td>trajectory_kinematic_feasibility.max_yaw_rate_rad_s</td>
+<td>smooth_goal_connection.pre_goal_offset</td>
 <td>float</td>
-<td>Maximum yaw rate [rad/s]. Default: 0.7 rad/s (~40 deg/s) aligns with MPC controller. Typical range: 0.5-1.0 for autonomous vehicles.</td>
-<td>0.7</td>
-<td>≥0.1<br>≤2.0</td>
-</tr>
-<tr>
-<td>trajectory_kinematic_feasibility.time_step_s</td>
-<td>float</td>
-<td>Time step for kinematic feasibility enforcement [s]. Default: 0.1 s.</td>
-<td>0.1</td>
-<td>≥0.01<br>≤1.0</td>
-</tr>
-<tr>
-<td>trajectory_mpt_optimizer.corridor_width_m</td>
-<td>float</td>
-<td>Base corridor width for adaptive bounds generation [m]. Defines the lateral distance from trajectory centerline to left/right bounds.</td>
-<td>3.5</td>
-<td>≥2.0<br>≤10.0</td>
-</tr>
-<tr>
-<td>trajectory_mpt_optimizer.enable_adaptive_width</td>
-<td>boolean</td>
-<td>Enable adaptive corridor width based on curvature and velocity. When true, corridor widens in curves and at low speeds.</td>
-<td>True</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>trajectory_mpt_optimizer.curvature_width_factor</td>
-<td>float</td>
-<td>Factor for curvature-based corridor widening [m/rad]. Higher values provide more space in curves.</td>
-<td>0.5</td>
-<td>≥0.0<br>≤2.0</td>
-</tr>
-<tr>
-<td>trajectory_mpt_optimizer.velocity_width_factor</td>
-<td>float</td>
-<td>Factor for velocity-based corridor widening [m]. Higher values provide more maneuvering room at low speeds.</td>
-<td>0.3</td>
-<td>≥0.0<br>≤2.0</td>
-</tr>
-<tr>
-<td>trajectory_mpt_optimizer.min_clearance_m</td>
-<td>float</td>
-<td>Minimum clearance from vehicle edges to corridor bounds [m]. Ensures minimum safe distance.</td>
-<td>0.5</td>
-<td>≥0.0<br>≤2.0</td>
-</tr>
-<tr>
-<td>trajectory_mpt_optimizer.reset_previous_data_each_iteration</td>
-<td>boolean</td>
-<td>Reset MPT's previous optimization data each cycle. Should be true for diffusion planner (new trajectories each cycle), false for incremental planners.</td>
-<td>True</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>trajectory_mpt_optimizer.enable_debug_info</td>
-<td>boolean</td>
-<td>Enable debug visualization markers for bounds and reference trajectory.</td>
-<td>False</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>trajectory_mpt_optimizer.output_delta_arc_length_m</td>
-<td>float</td>
-<td>Spacing between trajectory points in MPT optimization [m]. Smaller values provide finer resolution but increase computation.</td>
+<td>Offset before goal for smooth connection [m]</td>
 <td>1.0</td>
-<td>≥0.1<br>≤5.0</td>
+<td>≥0.0</td>
 </tr>
 <tr>
-<td>trajectory_mpt_optimizer.output_backward_traj_length_m</td>
+<td>ego_nearest_lanelet.dist_threshold</td>
 <td>float</td>
-<td>Length of trajectory extension backward from ego pose [m].</td>
-<td>5.0</td>
-<td>≥0.0<br>≤20.0</td>
-</tr>
-<tr>
-<td>trajectory_mpt_optimizer.ego_nearest_dist_threshold_m</td>
-<td>float</td>
-<td>Distance threshold for finding nearest trajectory point to ego [m].</td>
+<td>Distance threshold for ego nearest lanelet [m]</td>
 <td>3.0</td>
-<td>≥0.5<br>≤10.0</td>
+<td>≥0.0</td>
 </tr>
 <tr>
-<td>trajectory_mpt_optimizer.ego_nearest_yaw_threshold_deg</td>
+<td>ego_nearest_lanelet.yaw_threshold</td>
 <td>float</td>
-<td>Yaw threshold for finding nearest trajectory point to ego [degrees].</td>
-<td>45.0</td>
-<td>≥10.0<br>≤90.0</td>
+<td>Yaw threshold for ego nearest lanelet [rad]</td>
+<td>0.174533</td>
+<td>≥0.0</td>
 </tr>
 <tr>
-<td>trajectory_mpt_optimizer.acceleration_moving_average_window</td>
-<td>integer</td>
-<td>Moving average window size for acceleration smoothing. Larger values produce smoother acceleration but increase lag. Window of 1 = no smoothing.</td>
-<td>5</td>
-<td>≥1<br>≤20</td>
-</tr>
-<tr>
-<td>trajectory_extender.nearest_dist_threshold_m</td>
-<td>float</td>
-<td>Distance threshold for trajectory matching [m]</td>
-<td>1.5</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_extender.nearest_yaw_threshold_deg</td>
-<td>float</td>
-<td>Yaw threshold for trajectory matching [deg]</td>
-<td>60.0</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_extender.backward_trajectory_extension_m</td>
-<td>float</td>
-<td>Length to extend trajectory backward using ego history [m]</td>
-<td>5.0</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_spline_smoother.interpolation_resolution_m</td>
-<td>float</td>
-<td>Interpolation resolution for Akima spline [m]</td>
-<td>0.5</td>
-<td>&gt;0</td>
-</tr>
-<tr>
-<td>trajectory_spline_smoother.max_distance_discrepancy_m</td>
-<td>float</td>
-<td>Maximum position deviation allowed for orientation copying [m]</td>
-<td>5.0</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_spline_smoother.preserve_input_trajectory_orientation</td>
+<td>path_shift.enable</td>
 <td>boolean</td>
-<td>Copy orientations from input trajectory to spline output</td>
+<td>Enable path shifting to ego pose</td>
 <td>True</td>
 <td>N/A</td>
 </tr>
 <tr>
-<td>trajectory_qp_smoother.weight_smoothness</td>
+<td>path_shift.minimum_shift_length</td>
 <td>float</td>
-<td>Weight for path curvature minimization (geometric smoothness) [dimensionless]</td>
+<td>Lateral offset threshold to trigger shift [m]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>path_shift.minimum_shift_yaw</td>
+<td>float</td>
+<td>Yaw deviation threshold to trigger shift [rad]</td>
+<td>0.349</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>path_shift.minimum_shift_distance</td>
+<td>float</td>
+<td>Floor for shift distance [m]</td>
+<td>5.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>path_shift.min_speed_for_curvature</td>
+<td>float</td>
+<td>Lower bound on speed for curvature computation [m/s]</td>
+<td>2.77</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>path_shift.lateral_accel_limit</td>
+<td>float</td>
+<td>Lateral acceleration limit for shift [m/s^2]</td>
+<td>1.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>waypoint_group.separation_threshold</td>
+<td>float</td>
+<td>Max distance between waypoints in same group [m]</td>
+<td>1.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>waypoint_group.interval_margin_ratio</td>
+<td>float</td>
+<td>IRatio to expand group interval by lateral distance</td>
 <td>10.0</td>
-<td>≥0</td>
+<td>≥0.0</td>
 </tr>
 <tr>
-<td>trajectory_qp_smoother.weight_fidelity</td>
+<td>output.delta_arc_length</td>
 <td>float</td>
-<td>Weight for path fidelity (staying close to original path) [dimensionless]</td>
-<td>1.0</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_qp_smoother.time_step_s</td>
-<td>float</td>
-<td>Fixed time step for velocity/acceleration calculations [s]</td>
-<td>0.1</td>
-<td>&gt;0</td>
-</tr>
-<tr>
-<td>trajectory_qp_smoother.osqp_eps_abs</td>
-<td>float</td>
-<td>OSQP absolute convergence tolerance</td>
-<td>0.0001</td>
-<td>&gt;0</td>
-</tr>
-<tr>
-<td>trajectory_qp_smoother.osqp_eps_rel</td>
-<td>float</td>
-<td>OSQP relative convergence tolerance</td>
-<td>0.0001</td>
-<td>&gt;0</td>
-</tr>
-<tr>
-<td>trajectory_qp_smoother.osqp_max_iter</td>
-<td>integer</td>
-<td>OSQP maximum solver iterations</td>
-<td>100</td>
-<td>≥1</td>
-</tr>
-<tr>
-<td>trajectory_qp_smoother.osqp_verbose</td>
-<td>boolean</td>
-<td>Enable OSQP verbose solver output</td>
-<td>False</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>trajectory_qp_smoother.preserve_input_trajectory_orientation</td>
-<td>boolean</td>
-<td>Copy orientations from input trajectory to smoothed output</td>
-<td>True</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>trajectory_qp_smoother.max_distance_for_orientation_m</td>
-<td>float</td>
-<td>Max distance for nearest neighbor matching when copying orientations [m]</td>
-<td>5.0</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_qp_smoother.use_velocity_based_fidelity</td>
-<td>boolean</td>
-<td>Enable velocity-dependent fidelity weighting (lower fidelity at low speeds)</td>
-<td>True</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>trajectory_qp_smoother.velocity_threshold_mps</td>
-<td>float</td>
-<td>Velocity threshold at sigmoid midpoint for velocity-based fidelity [m/s]</td>
-<td>0.3</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_qp_smoother.sigmoid_sharpness</td>
-<td>float</td>
-<td>Sigmoid steepness for velocity-based fidelity transition (higher = sharper)</td>
-<td>50.0</td>
-<td>≥1</td>
-</tr>
-<tr>
-<td>trajectory_qp_smoother.min_fidelity_weight</td>
-<td>float</td>
-<td>Minimum fidelity weight at very low speeds [dimensionless]</td>
-<td>0.01</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_qp_smoother.max_fidelity_weight</td>
-<td>float</td>
-<td>Maximum fidelity weight at high speeds [dimensionless]</td>
-<td>1.0</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_qp_smoother.num_constrained_points_start</td>
-<td>integer</td>
-<td>Number of points from the start of the trajectory to constrain as hard constraints (preserves initial state)</td>
-<td>3</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_qp_smoother.num_constrained_points_end</td>
-<td>integer</td>
-<td>Number of points from the end of the trajectory to constrain as hard constraints</td>
-<td>3</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_velocity_optimizer.nearest_dist_threshold_m</td>
-<td>float</td>
-<td>Distance threshold for trajectory matching [m]</td>
-<td>1.5</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_velocity_optimizer.nearest_yaw_threshold_deg</td>
-<td>float</td>
-<td>Yaw threshold for trajectory matching [deg]</td>
-<td>60.0</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_velocity_optimizer.target_pull_out_speed_mps</td>
-<td>float</td>
-<td>Target speed during pull-out maneuver [m/s]</td>
-<td>1.0</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_velocity_optimizer.target_pull_out_acc_mps2</td>
-<td>float</td>
-<td>Target acceleration during pull-out maneuver [m/s²]</td>
-<td>1.0</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_velocity_optimizer.max_lateral_accel_mps2</td>
-<td>float</td>
-<td>Maximum lateral acceleration [m/s²]</td>
-<td>1.5</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>trajectory_velocity_optimizer.set_engage_speed</td>
-<td>boolean</td>
-<td>Set minimum speed during engage</td>
-<td>False</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>trajectory_velocity_optimizer.limit_speed</td>
-<td>boolean</td>
-<td>Enable speed limiting</td>
-<td>True</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>trajectory_velocity_optimizer.limit_lateral_acceleration</td>
-<td>boolean</td>
-<td>Enable lateral acceleration limiting</td>
-<td>False</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>trajectory_velocity_optimizer.smooth_velocities</td>
-<td>boolean</td>
-<td>Enable jerk-filtered velocity smoothing</td>
-<td>False</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>common.output_delta_arc_length</td>
-<td>float</td>
-<td>Delta arc length for output trajectory [m]</td>
+<td>Resampling interval for path-to-trajectory conversion [m]</td>
 <td>0.5</td>
-<td>&gt;0</td>
+<td>≥0.0</td>
 </tr>
 <tr>
-<td>common.output_backward_traj_length</td>
-<td>float</td>
-<td>Backward length for backward trajectory from base_link [m]</td>
-<td>5.0</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>option.enable_warm_start</td>
+<td>obstacle_stop.enable</td>
 <td>boolean</td>
-<td>Enable warm start for optimization</td>
+<td>Enable obstacle stop [m]</td>
 <td>True</td>
 <td>N/A</td>
 </tr>
 <tr>
-<td>option.enable_optimization_validation</td>
+<td>obstacle_stop.use_objects</td>
 <td>boolean</td>
-<td>Enable optimization validation</td>
+<td>Enable object detection [m]</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>obstacle_stop.use_pointcloud</td>
+<td>boolean</td>
+<td>Enable pointcloud detection [m]</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>obstacle_stop.enable_stop_for_objects</td>
+<td>boolean</td>
+<td>Enable stop for objects</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>obstacle_stop.enable_stop_for_pointcloud</td>
+<td>boolean</td>
+<td>Enable stop for pointcloud</td>
 <td>False</td>
 <td>N/A</td>
 </tr>
 <tr>
-<td>common.num_points</td>
-<td>integer</td>
-<td>Number of points for optimization</td>
-<td>100</td>
-<td>≥1</td>
+<td>obstacle_stop.stop_margin</td>
+<td>float</td>
+<td>Stop margin [m]</td>
+<td>6.0</td>
+<td>≥0.0</td>
 </tr>
 <tr>
-<td>common.delta_arc_length</td>
+<td>obstacle_stop.nominal_stopping_decel</td>
 <td>float</td>
-<td>Delta arc length for optimization [m]</td>
+<td>Nominal stopping deceleration [m/s^2]</td>
 <td>1.0</td>
-<td>&gt;0</td>
+<td>≥0.0</td>
 </tr>
 <tr>
-<td>weight.smooth_weight</td>
+<td>obstacle_stop.maximum_stopping_decel</td>
 <td>float</td>
-<td>Weight for smoothness constraint</td>
-<td>1.0</td>
-<td>≥0</td>
+<td>Maximum stopping deceleration [m/s^2]</td>
+<td>4.0</td>
+<td>≥0.0</td>
 </tr>
 <tr>
-<td>weight.lat_error_weight</td>
+<td>obstacle_stop.stopping_jerk</td>
 <td>float</td>
-<td>Weight for lateral error constraint</td>
-<td>0.001</td>
-<td>≥0</td>
-</tr>
-<tr>
-<td>elastic_band_params.ego_nearest_dist_threshold</td>
-<td>float</td>
-<td>Distance threshold for ego nearest search [m]</td>
+<td>Stopping jerk [m/s^3]</td>
 <td>3.0</td>
-<td>≥0</td>
+<td>≥0.0</td>
 </tr>
 <tr>
-<td>elastic_band_params.ego_nearest_yaw_threshold</td>
+<td>obstacle_stop.on_time_buffer</td>
 <td>float</td>
-<td>Yaw threshold for ego nearest search [rad]</td>
-<td>1.046</td>
-<td>≥0</td>
+<td>On time buffer [s]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>obstacle_stop.off_time_buffer</td>
+<td>float</td>
+<td>Off time buffer [s]</td>
+<td>1.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>obstacle_stop.lateral_margin</td>
+<td>float</td>
+<td>Lateral margin [m]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>obstacle_stop.arrived_distance_threshold</td>
+<td>float</td>
+<td>Threshold to check if the ego vehicle has arrived at the stop point [m]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>objects.object_types</td>
+<td>array</td>
+<td>Object types</td>
+<td>['car', 'truck', 'bus', 'trailer', 'motorcycle', 'bicycle', 'pedestrian', 'hazard']</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>objects.max_velocity_th</td>
+<td>float</td>
+<td>Max velocity threshold [m/s]</td>
+<td>1.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>objects.stopped_velocity_th</td>
+<td>float</td>
+<td>Velocity threshold for target object to be considered as stopped [m/s]</td>
+<td>0.25</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>objects.max_lateral_velocity_th</td>
+<td>float</td>
+<td>Maximum lateral velocity threshold for target object [m/s]</td>
+<td>1.0</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>objects.safety_buffer</td>
+<td>float</td>
+<td>Safety buffer to expand object shape [m]</td>
+<td>0.0</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>pointcloud.height_buffer</td>
+<td>float</td>
+<td>Height buffer [m]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>pointcloud.min_height</td>
+<td>float</td>
+<td>Min height [m]</td>
+<td>0.2</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>pointcloud.detection_range</td>
+<td>float</td>
+<td>Detection range [m]</td>
+<td>100.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>voxel_grid_filter.x</td>
+<td>float</td>
+<td>X [m]</td>
+<td>0.2</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>voxel_grid_filter.y</td>
+<td>float</td>
+<td>Y [m]</td>
+<td>0.2</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>voxel_grid_filter.z</td>
+<td>float</td>
+<td>Z [m]</td>
+<td>0.2</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>voxel_grid_filter.min_size</td>
+<td>float</td>
+<td>Min size</td>
+<td>3</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>clustering.tolerance</td>
+<td>float</td>
+<td>Tolerance [m]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>clustering.min_height</td>
+<td>float</td>
+<td>Min height [m]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>clustering.min_size</td>
+<td>float</td>
+<td>Min size</td>
+<td>10</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>clustering.max_size</td>
+<td>float</td>
+<td>Max size</td>
+<td>10000</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>rss_params.enable</td>
+<td>boolean</td>
+<td>Enable RSS-based stop logic</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>object_decel.car</td>
+<td>float</td>
+<td>Deceleration for car type objects [m/s^2]</td>
+<td>1.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>object_decel.truck</td>
+<td>float</td>
+<td>Deceleration for truck type objects [m/s^2]</td>
+<td>1.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>object_decel.bus</td>
+<td>float</td>
+<td>Deceleration for bus type objects [m/s^2]</td>
+<td>1.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>object_decel.trailer</td>
+<td>float</td>
+<td>Deceleration for trailer type objects [m/s^2]</td>
+<td>1.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>object_decel.motorcycle</td>
+<td>float</td>
+<td>Deceleration for motorcycle type objects [m/s^2]</td>
+<td>3.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>object_decel.bicycle</td>
+<td>float</td>
+<td>Deceleration for bicycle type objects [m/s^2]</td>
+<td>5.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>object_decel.pedestrian</td>
+<td>float</td>
+<td>Deceleration for pedestrian type objects [m/s^2]</td>
+<td>5.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>rss_params.ego_decel</td>
+<td>float</td>
+<td>Deceleration for ego vehicle used in RSS calculation [m/s^2]</td>
+<td>4.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>rss_params.reaction_time</td>
+<td>float</td>
+<td>Reaction time used in RSS calculation [s]</td>
+<td>0.2</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>rss_params.safety_margin</td>
+<td>float</td>
+<td>Safety margin used in RSS calculation [m]</td>
+<td>2.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>rss_params.lookahead_horizon</td>
+<td>float</td>
+<td>Lookahead horizon used in RSS calculation [s]</td>
+<td>1.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>surround_obstacle_stop.enable</td>
+<td>boolean</td>
+<td>Enable surround obstacle stop</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>surround_obstacle_stop.use_objects</td>
+<td>boolean</td>
+<td>Enable the use of objects for surround obstacle stop</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>surround_obstacle_stop.use_pointcloud</td>
+<td>boolean</td>
+<td>Enable the use of pointcloud for surround obstacle stop</td>
+<td>False</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>surround_obstacle_stop.object_types</td>
+<td>array</td>
+<td>Types of objects to consider for surround obstacle stop</td>
+<td>['car', 'truck', 'bus', 'trailer', 'motorcycle', 'bicycle', 'pedestrian', 'hazard', 'animal', 'unknown']</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>front_distance_th.car</td>
+<td>float</td>
+<td>Front surround check distance for car [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>front_distance_th.truck</td>
+<td>float</td>
+<td>Front surround check distance for truck [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>front_distance_th.bus</td>
+<td>float</td>
+<td>Front surround check distance for bus [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>front_distance_th.trailer</td>
+<td>float</td>
+<td>Front surround check distance for trailer [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>front_distance_th.motorcycle</td>
+<td>float</td>
+<td>Front surround check distance for motorcycle [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>front_distance_th.bicycle</td>
+<td>float</td>
+<td>Front surround check distance for bicycle [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>front_distance_th.pedestrian</td>
+<td>float</td>
+<td>Front surround check distance for pedestrian [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>front_distance_th.hazard</td>
+<td>float</td>
+<td>Front surround check distance for hazard [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>front_distance_th.animal</td>
+<td>float</td>
+<td>Front surround check distance for animal [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>front_distance_th.unknown</td>
+<td>float</td>
+<td>Front surround check distance for unknown [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>front_distance_th.pointcloud</td>
+<td>float</td>
+<td>Front surround check distance for pointcloud [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>side_distance_th.car</td>
+<td>float</td>
+<td>Side surround check distance for car [m]</td>
+<td>0.0</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>side_distance_th.truck</td>
+<td>float</td>
+<td>Side surround check distance for truck [m]</td>
+<td>0.0</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>side_distance_th.bus</td>
+<td>float</td>
+<td>Side surround check distance for bus [m]</td>
+<td>0.0</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>side_distance_th.trailer</td>
+<td>float</td>
+<td>Side surround check distance for trailer [m]</td>
+<td>0.0</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>side_distance_th.motorcycle</td>
+<td>float</td>
+<td>Side surround check distance for motorcycle [m]</td>
+<td>1.0</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>side_distance_th.bicycle</td>
+<td>float</td>
+<td>Side surround check distance for bicycle [m]</td>
+<td>1.0</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>side_distance_th.pedestrian</td>
+<td>float</td>
+<td>Side surround check distance for pedestrian [m]</td>
+<td>1.0</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>side_distance_th.hazard</td>
+<td>float</td>
+<td>Side surround check distance for hazard [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>side_distance_th.animal</td>
+<td>float</td>
+<td>Side surround check distance for animal [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>side_distance_th.unknown</td>
+<td>float</td>
+<td>Side surround check distance for unknown [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>side_distance_th.pointcloud</td>
+<td>float</td>
+<td>Side surround check distance for pointcloud [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>back_distance_th.car</td>
+<td>float</td>
+<td>Back surround check distance for car [m]</td>
+<td>0.0</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>back_distance_th.truck</td>
+<td>float</td>
+<td>Back surround check distance for truck [m]</td>
+<td>0.0</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>back_distance_th.bus</td>
+<td>float</td>
+<td>Back surround check distance for bus [m]</td>
+<td>0.0</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>back_distance_th.trailer</td>
+<td>float</td>
+<td>Back surround check distance for trailer [m]</td>
+<td>0.0</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>back_distance_th.motorcycle</td>
+<td>float</td>
+<td>Back surround check distance for motorcycle [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>back_distance_th.bicycle</td>
+<td>float</td>
+<td>Back surround check distance for bicycle [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>back_distance_th.pedestrian</td>
+<td>float</td>
+<td>Back surround check distance for pedestrian [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>back_distance_th.hazard</td>
+<td>float</td>
+<td>Back surround check distance for hazard [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>back_distance_th.animal</td>
+<td>float</td>
+<td>Back surround check distance for animal [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>back_distance_th.unknown</td>
+<td>float</td>
+<td>Back surround check distance for unknown [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>back_distance_th.pointcloud</td>
+<td>float</td>
+<td>Back surround check distance for pointcloud [m]</td>
+<td>0.5</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>surround_obstacle_stop.hysteresis_distance</td>
+<td>float</td>
+<td>Distance hysteresis threshold for clearing surround stop [m]</td>
+<td>0.1</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>surround_obstacle_stop.hysteresis_time</td>
+<td>float</td>
+<td>Time hysteresis threshold for clearing surround stop [s]</td>
+<td>0.2</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>surround_obstacle_stop.ego_stopped_vel_th</td>
+<td>float</td>
+<td>Velocity threshold below which ego vehicle is considered stopped [m/s]</td>
+<td>0.1</td>
+<td>≥0.0<br>≤10.0</td>
+</tr>
+<tr>
+<td>velocity_smoother.nearest_dist_threshold_m</td>
+<td>float</td>
+<td>Nearest distance threshold [m]</td>
+<td>1.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>velocity_smoother.nearest_yaw_threshold_deg</td>
+<td>float</td>
+<td>Nearest yaw threshold [deg]</td>
+<td>60.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>velocity_smoother.target_pull_out_speed_mps</td>
+<td>float</td>
+<td>Target pull out speed [m/s]</td>
+<td>0.25</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>velocity_smoother.target_pull_out_acc_mps2</td>
+<td>float</td>
+<td>Target pull out acceleration [m/s^2]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>velocity_smoother.max_speed_mps</td>
+<td>float</td>
+<td>Max speed [m/s]</td>
+<td>13.88</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>velocity_smoother.max_lateral_accel_mps2</td>
+<td>float</td>
+<td>Max lateral acceleration [m/s^2]</td>
+<td>1.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>velocity_smoother.set_engage_speed</td>
+<td>boolean</td>
+<td>Set engage speed at start</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>velocity_smoother.limit_speed</td>
+<td>boolean</td>
+<td>Apply max speed limit</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>velocity_smoother.limit_lateral_acceleration</td>
+<td>boolean</td>
+<td>Apply max lateral acceleration limit</td>
+<td>False</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>velocity_smoother.smooth_velocities</td>
+<td>boolean</td>
+<td>Apply jerk-filtered velocity smoothing</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>velocity_smoother.stop_dist_to_prohibit_engage</td>
+<td>float</td>
+<td>Stop distance to prohibit engage [m]</td>
+<td>0.5</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>post_resample.max_trajectory_length</td>
+<td>float</td>
+<td>Max trajectory length for post-optimization resampling [m]</td>
+<td>300.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>post_resample.min_trajectory_length</td>
+<td>float</td>
+<td>Minimum trajectory length for post-optimization resampling [m]</td>
+<td>30.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>post_resample.resample_time</td>
+<td>float</td>
+<td>Resample total time [s]</td>
+<td>10.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>post_resample.dense_resample_dt</td>
+<td>float</td>
+<td>Dense sampling time interval [s]</td>
+<td>0.1</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>post_resample.dense_min_interval_distance</td>
+<td>float</td>
+<td>Dense sampling min interval [m]</td>
+<td>0.1</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>post_resample.sparse_resample_dt</td>
+<td>float</td>
+<td>Sparse sampling time interval [s]</td>
+<td>0.1</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>post_resample.sparse_min_interval_distance</td>
+<td>float</td>
+<td>Sparse sampling min interval [m]</td>
+<td>1.0</td>
+<td>≥0.0</td>
+</tr>
+<tr>
+<td>debug.enable_path</td>
+<td>boolean</td>
+<td>Enable path debugging</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>debug.enable_shifted_trajectory</td>
+<td>boolean</td>
+<td>Enable shifted trajectory debugging</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>debug.enable_optimizer_trajectory</td>
+<td>boolean</td>
+<td>Enable optimizer trajectory debugging</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>debug.enable_modifier_trajectory</td>
+<td>boolean</td>
+<td>Enable modifier trajectory debugging</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>debug.enable_output_trajectory</td>
+<td>boolean</td>
+<td>Enable output trajectory debugging</td>
+<td>True</td>
+<td>N/A</td>
 </tr>
 </tbody>
 </table>
 <p>Parameters can be set via YAML configuration files in the <code>config/</code> directory.</p>
-<h3 id="parameter-types">Parameter Types<a class="headerlink" href="#parameter-types" title="Permanent link">#</a></h3>
-<ol>
-<li><strong>Plugin Loading</strong> (<code>plugin_names</code>) - Array of plugin class names determining load order and execution sequence</li>
-<li><strong>Activation Flags</strong> - Boolean flags for runtime enable/disable (e.g., <code>use_qp_smoother</code>, <code>use_temporal_mpt_optimizer</code>)</li>
-<li><strong>Plugin-Specific Parameters</strong> - Namespaced parameters for each plugin (e.g., <code>trajectory_qp_smoother.weight_smoothness</code>)</li>
-</ol>
-<h3 id="configuring-plugin-order">Configuring Plugin Order<a class="headerlink" href="#configuring-plugin-order" title="Permanent link">#</a></h3>
-<p>To change plugin execution order, modify the <code>plugin_names</code> array in <code>config/trajectory_optimizer.param.yaml</code>:</p>
-<p>```yaml</p>
-<h1 id="example-run-spline-smoother-before-velocity-optimizer">Example: Run spline smoother before velocity optimizer<a class="headerlink" href="#example-run-spline-smoother-before-velocity-optimizer" title="Permanent link">#</a></h1>
-<p>plugin_names:
-  - "autoware::trajectory_optimizer::plugin::TrajectoryPointFixer"
-  - "autoware::trajectory_optimizer::plugin::TrajectorySplineSmoother"
-  - "autoware::trajectory_optimizer::plugin::TrajectoryVelocityOptimizer"
-  - "autoware::trajectory_optimizer::plugin::TrajectoryPointFixer"
-```</p>
-<h4 id="critical-qp-smoother-ordering-constraint">CRITICAL: QP Smoother Ordering Constraint<a class="headerlink" href="#critical-qp-smoother-ordering-constraint" title="Permanent link">#</a></h4>
-<p>The <code>TrajectoryQPSmoother</code> plugin <strong>MUST run before</strong> any plugins that resample or modify trajectory structure:</p>
-<ul>
-<li><code>TrajectorySplineSmoother</code> (Akima spline - resamples trajectory)</li>
-<li><code>TrajectoryEBSmootherOptimizer</code> (Elastic Band - resamples trajectory)</li>
-<li><code>TrajectoryVelocityOptimizer</code> (velocity smoothing with resampling)</li>
-<li><code>TrajectoryExtender</code> (adds/modifies points at trajectory start)</li>
-</ul>
-<p>The QP solver requires constant time intervals (Δt = 0.1s) between points. These plugins modify the time domain structure or add points, breaking the QP solver assumptions. If you need QP smoothing, it must appear first in the pipeline after <code>TrajectoryPointFixer</code>.</p>
-<p>Note: Plugin order changes require node restart. Runtime enable/disable is controlled by activation flags.</p></div>
+<p>Jerk-filtered smoother parameters are defined in <code>config/velocity_smoother/jerk_filtered_smoother.param.yaml</code>.
+EB smoother parameters are defined in <code>config/trajectory_optimizer_plugins/elastic_band_smoother.param.yaml</code>.</p></div>
 
 
 
@@ -23560,7 +23864,7 @@ known limitations, see <a href="docs/trajectory_optimizer_specification/">docs/t
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../autoware_trajectory_modifier/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Autoware Trajectory Modifier">
+          <a href="../autoware_manual_lane_change_handler/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Manual Lane Change Handler">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -23570,20 +23874,20 @@ known limitations, see <a href="docs/trajectory_optimizer_specification/">docs/t
                 Previous
               </span>
               <div class="md-ellipsis">
-                Autoware Trajectory Modifier
+                Manual Lane Change Handler
               </div>
             </div>
           </a>
         
         
           
-          <a href="docs/continuous_jerk_filter/" class="md-footer__link md-footer__link--next" aria-label="Next: Continuous Jerk Filter">
+          <a href="../autoware_mission_planner_universe/" class="md-footer__link md-footer__link--next" aria-label="Next: Mission Planner">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Continuous Jerk Filter
+                Mission Planner
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -23627,7 +23931,7 @@ known limitations, see <a href="docs/trajectory_optimizer_specification/">docs/t
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.instant", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.footer"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="../../docs/assets/js/mathjax.js"></script>
       
